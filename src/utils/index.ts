@@ -1,4 +1,5 @@
 export { computeInsights } from './computeInsights'
+export { computeSpendingBreakdown } from './computeSpendingBreakdown'
 export { computeSummary } from './computeSummary'
 export { filterTransactions } from './filterTransactions'
 export { formatINR } from './formatCurrency'

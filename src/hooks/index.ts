@@ -1,4 +1,5 @@
 export { useDebounce } from './useDebounce'
+export { useDashboardOverview } from './useDashboardOverview'
 export { useFilters } from './useFilters'
 export { useInsights } from './useInsights'
 export { usePermission } from './usePermission'

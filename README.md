@@ -8,7 +8,8 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
 - Phase 1 complete: **Foundation and Architecture**
 - Phase 2 complete: **Data Model and Utilities**
 - Phase 3 complete: **State Layer and Hooks**
-- Awaiting approval to start **Phase 4: Dashboard Overview Feature**
+- Phase 4 complete: **Dashboard Overview Feature**
+- Awaiting approval to start **Phase 5: Transactions Feature**
 
 ## Delivery Model
 
@@ -102,6 +103,33 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
   - `npm run typecheck`
   - `npm run build`
 
+## Phase 4 Completed Scope
+
+- Implemented modular dashboard UI components:
+  - [SummaryCard.tsx](./src/components/cards/SummaryCard.tsx)
+  - [SummaryCardsGrid.tsx](./src/components/cards/SummaryCardsGrid.tsx)
+  - [BalanceTrendChart.tsx](./src/components/charts/BalanceTrendChart.tsx)
+  - [SpendingBreakdownChart.tsx](./src/components/charts/SpendingBreakdownChart.tsx)
+  - [DashboardOverviewSection.tsx](./src/components/layout/DashboardOverviewSection.tsx)
+- Added dashboard-focused view models in:
+  - [dashboard.ts](./src/types/dashboard.ts)
+- Added pure utility for categorical chart computation:
+  - [computeSpendingBreakdown.ts](./src/utils/computeSpendingBreakdown.ts)
+- Added orchestration hook for dashboard metrics/charts/filter interaction:
+  - [useDashboardOverview.ts](./src/hooks/useDashboardOverview.ts)
+- Replaced placeholder dashboard content in app shell with real dashboard overview section.
+- Added chart interaction behavior:
+  - clicking spending pie slices updates category filter state
+  - clicking selected category toggles filter off
+- Added chart loading states and empty states for resilient UX.
+- Added ARIA chart descriptions with text summaries.
+- Optimized bundle by lazy-loading chart modules with `React.lazy` + `Suspense`.
+- Validation complete:
+  - `npm run format:check`
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run build`
+
 ## Local Setup
 
 ```bash
@@ -126,7 +154,7 @@ npm run dev
 - [x] Phase 1 complete
 - [x] Phase 2 complete
 - [x] Phase 3 complete
-- [ ] Phase 4 complete
+- [x] Phase 4 complete
 - [ ] Phase 5 complete
 - [ ] Phase 6 complete
 - [ ] Phase 7 complete

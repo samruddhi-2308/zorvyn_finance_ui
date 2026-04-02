@@ -1,4 +1,10 @@
 export type {
+  BalanceTrendPoint,
+  SpendingBreakdownPoint,
+  SummaryCardModel,
+  TrendDirection,
+} from './dashboard'
+export type {
   DateRangeFilter,
   ExpenseCategory,
   HighestSpendingCategoryInsight,

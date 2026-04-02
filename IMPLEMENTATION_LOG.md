@@ -139,3 +139,44 @@ This document tracks architecture decisions, phase-by-phase progress, and notabl
 ### Next Milestone
 
 - Begin **Phase 4: Dashboard Overview Feature** after explicit approval.
+
+## 2026-04-02 - Phase 4: Dashboard Overview Feature
+
+### Completed
+
+- Installed Recharts and implemented modular overview UI components:
+  - [`SummaryCard.tsx`](./src/components/cards/SummaryCard.tsx)
+  - [`SummaryCardsGrid.tsx`](./src/components/cards/SummaryCardsGrid.tsx)
+  - [`BalanceTrendChart.tsx`](./src/components/charts/BalanceTrendChart.tsx)
+  - [`SpendingBreakdownChart.tsx`](./src/components/charts/SpendingBreakdownChart.tsx)
+  - [`DashboardOverviewSection.tsx`](./src/components/layout/DashboardOverviewSection.tsx)
+- Added dashboard view models in [`src/types/dashboard.ts`](./src/types/dashboard.ts).
+- Added pure chart-data utility [`src/utils/computeSpendingBreakdown.ts`](./src/utils/computeSpendingBreakdown.ts).
+- Added orchestration hook [`src/hooks/useDashboardOverview.ts`](./src/hooks/useDashboardOverview.ts) for:
+  - summary card models with month-over-month trend badges
+  - balance trend series derivation
+  - spending breakdown derivation
+  - chart ARIA summary text
+  - pie-slice to category-filter interaction
+- Replaced dashboard placeholder blocks in [`AppShell.tsx`](./src/components/layout/AppShell.tsx) with the new overview section.
+- Added loading skeleton states and empty states for cards/charts.
+- Added clickable pie behavior that updates category filter state and supports toggle-off.
+- Added ARIA chart descriptions for screen-reader context.
+- Optimized chart bundle cost by lazy-loading chart modules with `React.lazy` and `Suspense`.
+
+### Validation
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npm run typecheck` passed.
+- `npm run build` passed (with elevation due sandbox spawn restriction on this environment).
+
+### Decisions
+
+- Kept chart transformations in hooks/utilities, leaving chart components render-focused.
+- Introduced lazy-loaded chart chunks to avoid monolithic dashboard bundle growth from Recharts.
+- Preserved transaction section as Phase 5 scope while enabling chart-driven filtering now.
+
+### Next Milestone
+
+- Begin **Phase 5: Transactions Feature** after explicit approval.

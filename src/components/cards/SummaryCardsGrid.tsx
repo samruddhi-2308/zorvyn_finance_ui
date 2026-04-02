@@ -1,0 +1,55 @@
+import type { ReactElement } from 'react'
+import type { SummaryCardModel } from '@/types'
+import { SummaryCard } from './SummaryCard'
+
+interface SummaryCardsGridProps {
+  readonly cards: readonly SummaryCardModel[]
+  readonly isLoading: boolean
+}
+
+function SummaryCardSkeleton(): ReactElement {
+  return (
+    <article
+      className="surface-card animate-pulse border p-4"
+      aria-label="Loading dashboard summary card"
+    >
+      <div className="h-3 w-28 rounded bg-slate-200" />
+      <div className="mt-4 h-8 w-36 rounded bg-slate-200" />
+      <div className="mt-3 h-5 w-40 rounded bg-slate-200" />
+    </article>
+  )
+}
+
+/**
+ * Responsive grid for top-level dashboard summary cards.
+ */
+export function SummaryCardsGrid({
+  cards,
+  isLoading,
+}: SummaryCardsGridProps): ReactElement {
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }, (_, index) => (
+          <SummaryCardSkeleton key={`summary-skeleton-${index}`} />
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => (
+        <SummaryCard
+          key={card.title}
+          title={card.title}
+          value={card.value}
+          trendDirection={card.trendDirection}
+          trendValue={card.trendValue}
+          trendLabel={card.trendLabel}
+          colorVariant={card.colorVariant}
+        />
+      ))}
+    </div>
+  )
+}

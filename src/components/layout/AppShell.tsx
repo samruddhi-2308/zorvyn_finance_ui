@@ -1,35 +1,13 @@
-import { useEffect, useMemo, type ReactElement } from 'react'
+import { useEffect, type ReactElement } from 'react'
+import { DashboardOverviewSection } from '@/components/layout/DashboardOverviewSection'
 import { Header } from '@/components/layout/Header'
 import { Sidebar } from '@/components/layout/Sidebar'
-import {
-  useInsights,
-  usePermission,
-  useRole,
-  useTransactions,
-  useUI,
-} from '@/hooks'
-import { formatINR } from '@/utils'
+import { usePermission, useRole, useTransactions, useUI } from '@/hooks'
+import { formatDate, formatINR } from '@/utils'
 
-interface KpiCard {
-  readonly title: string
-  readonly value: string
-  readonly helperText: string
-}
-
-const MODULE_PLACEHOLDERS = [
-  {
-    id: 'balance-trend',
-    title: 'Balance Trend',
-    description:
-      'Time-series chart scaffold prepared for Recharts integration.',
-  },
-  {
-    id: 'spending-breakdown',
-    title: 'Spending Breakdown',
-    description: 'Category chart scaffold prepared for interactive filtering.',
-  },
-] as const
-
+/**
+ * Top-level application shell that composes layout and section containers.
+ */
 export function AppShell(): ReactElement {
   const { currentRole, setRole } = useRole()
   const {
@@ -41,7 +19,6 @@ export function AppShell(): ReactElement {
   } = useUI()
 
   const {
-    summary,
     totalResults,
     rangeStart,
     rangeEnd,
@@ -49,43 +26,12 @@ export function AppShell(): ReactElement {
     totalPages,
     paginatedTransactions,
   } = useTransactions()
-  const insights = useInsights()
+
   const canManageTransactions = usePermission('create')
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
-
-  const kpiCards = useMemo<readonly KpiCard[]>(
-    () => [
-      {
-        title: 'Total Balance',
-        value: formatINR(summary.totalBalance),
-        helperText: 'Computed from all persisted transactions.',
-      },
-      {
-        title: 'Total Income',
-        value: formatINR(summary.totalIncome),
-        helperText: 'Includes Salary, Freelance, and Investments.',
-      },
-      {
-        title: 'Total Expenses',
-        value: formatINR(summary.totalExpenses),
-        helperText: 'Aggregated across all expense categories.',
-      },
-      {
-        title: 'Savings Rate',
-        value: `${(summary.savingsRate * 100).toFixed(1)}%`,
-        helperText: 'Derived from net balance divided by income.',
-      },
-    ],
-    [
-      summary.savingsRate,
-      summary.totalBalance,
-      summary.totalExpenses,
-      summary.totalIncome,
-    ],
-  )
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text-primary)]">
@@ -115,67 +61,7 @@ export function AppShell(): ReactElement {
             id="main-content"
             className="mx-auto flex w-full max-w-screen-2xl flex-col gap-6 p-4 sm:p-6 lg:p-8"
           >
-            <section
-              id="dashboard-overview"
-              aria-labelledby="dashboard-overview-title"
-              className="space-y-4"
-            >
-              <div>
-                <h2
-                  id="dashboard-overview-title"
-                  className="text-2xl font-bold tracking-tight"
-                >
-                  Dashboard Overview
-                </h2>
-                <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                  Phase 3 connects the shell to centralized Zustand state and
-                  memoized hooks.
-                </p>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {kpiCards.map((card) => (
-                  <article key={card.title} className="surface-card p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-                      {card.title}
-                    </p>
-                    <p className="mt-5 text-lg font-semibold text-[var(--color-text-primary)]">
-                      {card.value}
-                    </p>
-                    <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                      {card.helperText}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section
-              id="insights-overview"
-              aria-label="Visualization module scaffold"
-              className="grid gap-6 xl:grid-cols-2"
-            >
-              {MODULE_PLACEHOLDERS.map((module) => (
-                <article key={module.id} className="surface-card p-5">
-                  <h3 className="text-lg font-semibold">{module.title}</h3>
-                  <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                    {module.description}
-                  </p>
-                  <p className="mt-2 text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-                    {module.id === 'balance-trend'
-                      ? insights.spendingTrend.summary
-                      : `Top expense category: ${
-                          insights.highestSpendingCategory.category ?? 'N/A'
-                        }`}
-                  </p>
-                  <div
-                    className="mt-5 h-64 rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-background)]"
-                    role="img"
-                    aria-label={`${module.title} visualization placeholder`}
-                  />
-                </article>
-              ))}
-            </section>
+            <DashboardOverviewSection />
 
             <section
               id="transactions-overview"
@@ -190,7 +76,7 @@ export function AppShell(): ReactElement {
               </h3>
               <p className="mt-1 text-sm text-[var(--color-text-muted)]">
                 Transaction pagination, role permissions, and derived views are
-                now connected to Phase 3 state hooks.
+                connected. Full filters and controls arrive in Phase 5.
               </p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--color-text-muted)]">
                 <span className="rounded-md border border-[var(--color-border)] px-2 py-1">
@@ -248,7 +134,7 @@ export function AppShell(): ReactElement {
                           className="border-t border-[var(--color-border)]"
                         >
                           <td className="px-4 py-3 text-sm">
-                            {transaction.date}
+                            {formatDate(transaction.date)}
                           </td>
                           <td className="px-4 py-3 text-sm">
                             {transaction.description}

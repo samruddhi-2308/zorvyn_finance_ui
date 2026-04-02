@@ -1,0 +1,462 @@
+[
+  {
+    "id": "txn_001",
+    "date": "2025-04-01",
+    "description": "Monthly Salary Credit",
+    "amount": 85000,
+    "type": "income",
+    "category": "Salary",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_002",
+    "date": "2025-04-05",
+    "description": "Freelance Website Revamp",
+    "amount": 12000,
+    "type": "income",
+    "category": "Freelance",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_003",
+    "date": "2025-04-20",
+    "description": "Dividend Payout - Index Fund",
+    "amount": 4200,
+    "type": "income",
+    "category": "Investments",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_004",
+    "date": "2025-04-03",
+    "description": "Grocery Store - BigBasket",
+    "amount": 2350.5,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_005",
+    "date": "2025-04-10",
+    "description": "Weekly Groceries - DMart",
+    "amount": 1980,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_006",
+    "date": "2025-04-17",
+    "description": "Weekly Groceries - Reliance Fresh",
+    "amount": 2590,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_007",
+    "date": "2025-04-08",
+    "description": "Metro Recharge",
+    "amount": 540,
+    "type": "expense",
+    "category": "Transport",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_008",
+    "date": "2025-04-14",
+    "description": "Ride Share - Airport Drop",
+    "amount": 760,
+    "type": "expense",
+    "category": "Transport",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_009",
+    "date": "2025-04-11",
+    "description": "Electricity Bill - April",
+    "amount": 3100,
+    "type": "expense",
+    "category": "Utilities",
+    "paymentMethod": "Net Banking",
+    "status": "completed"
+  },
+  {
+    "id": "txn_010",
+    "date": "2025-04-12",
+    "description": "Broadband Bill - April",
+    "amount": 999,
+    "type": "expense",
+    "category": "Utilities",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_011",
+    "date": "2025-04-15",
+    "description": "Cinema Tickets",
+    "amount": 850,
+    "type": "expense",
+    "category": "Entertainment",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_012",
+    "date": "2025-04-19",
+    "description": "Pharmacy Purchase",
+    "amount": 1260,
+    "type": "expense",
+    "category": "Healthcare",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_013",
+    "date": "2025-04-22",
+    "description": "Summer Apparel Shopping",
+    "amount": 4320,
+    "type": "expense",
+    "category": "Shopping",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_014",
+    "date": "2025-04-25",
+    "description": "Family Dinner",
+    "amount": 1850,
+    "type": "expense",
+    "category": "Entertainment",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_015",
+    "date": "2025-04-27",
+    "description": "Water Utility Bill",
+    "amount": 640,
+    "type": "expense",
+    "category": "Utilities",
+    "paymentMethod": "UPI",
+    "status": "pending"
+  },
+  {
+    "id": "txn_016",
+    "date": "2025-05-01",
+    "description": "Monthly Salary Credit",
+    "amount": 85000,
+    "type": "income",
+    "category": "Salary",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_017",
+    "date": "2025-05-06",
+    "description": "Freelance API Integration",
+    "amount": 15000,
+    "type": "income",
+    "category": "Freelance",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_018",
+    "date": "2025-05-21",
+    "description": "Mutual Fund Dividend",
+    "amount": 3800,
+    "type": "income",
+    "category": "Investments",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_019",
+    "date": "2025-05-03",
+    "description": "Grocery Store - BigBasket",
+    "amount": 2440,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_020",
+    "date": "2025-05-10",
+    "description": "Weekly Groceries - DMart",
+    "amount": 2110,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_021",
+    "date": "2025-05-18",
+    "description": "Weekly Groceries - Reliance Fresh",
+    "amount": 2695,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_022",
+    "date": "2025-05-08",
+    "description": "Fuel Refill",
+    "amount": 1850,
+    "type": "expense",
+    "category": "Transport",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_023",
+    "date": "2025-05-14",
+    "description": "Metro Recharge",
+    "amount": 620,
+    "type": "expense",
+    "category": "Transport",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_024",
+    "date": "2025-05-11",
+    "description": "Electricity Bill - May",
+    "amount": 3280,
+    "type": "expense",
+    "category": "Utilities",
+    "paymentMethod": "Net Banking",
+    "status": "completed"
+  },
+  {
+    "id": "txn_025",
+    "date": "2025-05-12",
+    "description": "Broadband Bill - May",
+    "amount": 999,
+    "type": "expense",
+    "category": "Utilities",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_026",
+    "date": "2025-05-17",
+    "description": "Live Concert Tickets",
+    "amount": 2800,
+    "type": "expense",
+    "category": "Entertainment",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_027",
+    "date": "2025-05-19",
+    "description": "Dental Consultation",
+    "amount": 2400,
+    "type": "expense",
+    "category": "Healthcare",
+    "paymentMethod": "UPI",
+    "status": "pending"
+  },
+  {
+    "id": "txn_028",
+    "date": "2025-05-24",
+    "description": "Wireless Earbuds Purchase",
+    "amount": 12999,
+    "type": "expense",
+    "category": "Shopping",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_029",
+    "date": "2025-05-26",
+    "description": "Coffee and Snacks",
+    "amount": 340,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_030",
+    "date": "2025-05-29",
+    "description": "OTT Subscription",
+    "amount": 499,
+    "type": "expense",
+    "category": "Entertainment",
+    "paymentMethod": "Wallet",
+    "status": "completed"
+  },
+  {
+    "id": "txn_031",
+    "date": "2025-06-01",
+    "description": "Monthly Salary Credit",
+    "amount": 85000,
+    "type": "income",
+    "category": "Salary",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_032",
+    "date": "2025-06-05",
+    "description": "Freelance UI Audit",
+    "amount": 18000,
+    "type": "income",
+    "category": "Freelance",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_033",
+    "date": "2025-06-20",
+    "description": "Bond Interest Credit",
+    "amount": 5000,
+    "type": "income",
+    "category": "Investments",
+    "paymentMethod": "Bank Transfer",
+    "status": "completed"
+  },
+  {
+    "id": "txn_034",
+    "date": "2025-06-03",
+    "description": "Grocery Store - BigBasket",
+    "amount": 2510,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_035",
+    "date": "2025-06-10",
+    "description": "Weekly Groceries - DMart",
+    "amount": 2200,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_036",
+    "date": "2025-06-18",
+    "description": "Weekly Groceries - Reliance Fresh",
+    "amount": 2780,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_037",
+    "date": "2025-06-08",
+    "description": "Ride Share - Client Meeting",
+    "amount": 720,
+    "type": "expense",
+    "category": "Transport",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_038",
+    "date": "2025-06-14",
+    "description": "Fuel Refill",
+    "amount": 1940,
+    "type": "expense",
+    "category": "Transport",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_039",
+    "date": "2025-06-11",
+    "description": "Electricity Bill - June",
+    "amount": 3420,
+    "type": "expense",
+    "category": "Utilities",
+    "paymentMethod": "Net Banking",
+    "status": "completed"
+  },
+  {
+    "id": "txn_040",
+    "date": "2025-06-12",
+    "description": "Broadband Bill - June",
+    "amount": 999,
+    "type": "expense",
+    "category": "Utilities",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_041",
+    "date": "2025-06-16",
+    "description": "Weekend Trip Activities",
+    "amount": 4600,
+    "type": "expense",
+    "category": "Entertainment",
+    "paymentMethod": "Card",
+    "status": "pending"
+  },
+  {
+    "id": "txn_042",
+    "date": "2025-06-19",
+    "description": "Diagnostic Lab Tests",
+    "amount": 3100,
+    "type": "expense",
+    "category": "Healthcare",
+    "paymentMethod": "UPI",
+    "status": "completed"
+  },
+  {
+    "id": "txn_043",
+    "date": "2025-06-24",
+    "description": "Home Decor Shopping",
+    "amount": 7580,
+    "type": "expense",
+    "category": "Shopping",
+    "paymentMethod": "Card",
+    "status": "completed"
+  },
+  {
+    "id": "txn_044",
+    "date": "2025-06-26",
+    "description": "Evening Snacks",
+    "amount": 180,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "Cash",
+    "status": "completed"
+  },
+  {
+    "id": "txn_045",
+    "date": "2025-06-28",
+    "description": "Gaming Subscription",
+    "amount": 1250,
+    "type": "expense",
+    "category": "Entertainment",
+    "paymentMethod": "Wallet",
+    "status": "completed"
+  },
+  {
+    "id": "txn_046",
+    "date": "2025-06-30",
+    "description": "Tea Stall",
+    "amount": 50,
+    "type": "expense",
+    "category": "Food & Groceries",
+    "paymentMethod": "Cash",
+    "status": "completed"
+  }
+]

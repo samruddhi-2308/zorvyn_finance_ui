@@ -180,3 +180,48 @@ This document tracks architecture decisions, phase-by-phase progress, and notabl
 ### Next Milestone
 
 - Begin **Phase 5: Transactions Feature** after explicit approval.
+
+## 2026-04-02 - Phase 5: Transactions Feature
+
+### Completed
+
+- Implemented full transactions module in [`TransactionsSection.tsx`](./src/components/transactions/TransactionsSection.tsx).
+- Added filter/search UI in [`TransactionsFilters.tsx`](./src/components/transactions/TransactionsFilters.tsx):
+  - debounced search integration
+  - type filter controls
+  - category dropdown multi-select
+  - date-range filtering
+  - filter reset controls
+- Added sortable data table in [`TransactionsTable.tsx`](./src/components/transactions/TransactionsTable.tsx):
+  - sorting on Date, Amount, and Category
+  - formatted date and amount values
+  - status dot + type/category badges
+  - delegated row action handling using `data-*` attributes
+- Added empty-state component [`TransactionsEmptyState.tsx`](./src/components/transactions/TransactionsEmptyState.tsx).
+- Added pagination controls in [`TransactionsPagination.tsx`](./src/components/transactions/TransactionsPagination.tsx).
+- Added admin transaction modal in [`TransactionModal.tsx`](./src/components/transactions/TransactionModal.tsx):
+  - add/edit workflows
+  - inline validation and field-level errors
+  - Escape-to-close behavior
+  - payment/status controls
+- Updated transactions hook pagination behavior in [`useTransactions.ts`](./src/hooks/useTransactions.ts):
+  - conditional pagination enabled only when results are greater than 20
+  - range calculations updated for paginated/non-paginated states
+- Replaced AppShell transaction placeholder with live feature section in [`AppShell.tsx`](./src/components/layout/AppShell.tsx).
+
+### Validation
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npm run typecheck` passed.
+- `npm run build` passed (with elevation due sandbox spawn restriction in this environment).
+
+### Decisions
+
+- Preserved modularity by splitting transactions into focused feature components.
+- Retained event-delegated row actions while satisfying strict accessibility lint constraints.
+- Kept modal form rules deterministic and store-compatible via typed `TransactionDraft` payloads.
+
+### Next Milestone
+
+- Begin **Phase 6: Insights Feature** after explicit approval.

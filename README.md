@@ -9,7 +9,8 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
 - Phase 2 complete: **Data Model and Utilities**
 - Phase 3 complete: **State Layer and Hooks**
 - Phase 4 complete: **Dashboard Overview Feature**
-- Awaiting approval to start **Phase 5: Transactions Feature**
+- Phase 5 complete: **Transactions Feature**
+- Awaiting approval to start **Phase 6: Insights Feature**
 
 ## Delivery Model
 
@@ -130,6 +131,46 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
   - `npm run typecheck`
   - `npm run build`
 
+## Phase 5 Completed Scope
+
+- Replaced transaction placeholder with production transactions module:
+  - [TransactionsSection.tsx](./src/components/transactions/TransactionsSection.tsx)
+- Implemented filter/search layer:
+  - debounced search
+  - type filter (All/Income/Expense)
+  - category dropdown multi-select
+  - date range filters
+  - reset controls
+  - [TransactionsFilters.tsx](./src/components/transactions/TransactionsFilters.tsx)
+- Implemented sortable transaction table:
+  - sortable columns: Date, Amount, Category
+  - formatted date/currency rendering
+  - type badges and status indicators
+  - delegated row action handling
+  - [TransactionsTable.tsx](./src/components/transactions/TransactionsTable.tsx)
+- Implemented admin-only actions:
+  - add transaction modal
+  - edit transaction modal
+  - delete transaction action
+  - inline validation and keyboard-close behavior
+  - [TransactionModal.tsx](./src/components/transactions/TransactionModal.tsx)
+- Implemented pagination behavior:
+  - activates when filtered results are greater than 20
+  - 10 records per page
+  - prev/next controls + result range text
+  - [TransactionsPagination.tsx](./src/components/transactions/TransactionsPagination.tsx)
+- Added robust empty states:
+  - [TransactionsEmptyState.tsx](./src/components/transactions/TransactionsEmptyState.tsx)
+- Updated shared transactions hook to support conditional pagination:
+  - [useTransactions.ts](./src/hooks/useTransactions.ts)
+- Integrated transactions feature into shell:
+  - [AppShell.tsx](./src/components/layout/AppShell.tsx)
+- Validation complete:
+  - `npm run format:check`
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run build`
+
 ## Local Setup
 
 ```bash
@@ -155,7 +196,7 @@ npm run dev
 - [x] Phase 2 complete
 - [x] Phase 3 complete
 - [x] Phase 4 complete
-- [ ] Phase 5 complete
+- [x] Phase 5 complete
 - [ ] Phase 6 complete
 - [ ] Phase 7 complete
 - [ ] Phase 8 complete

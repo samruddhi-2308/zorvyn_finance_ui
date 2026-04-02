@@ -13,7 +13,7 @@
 - [x] Phase 2 - Data Model and Utilities
 - [x] Phase 3 - State Layer and Hooks
 - [x] Phase 4 - Dashboard Overview Feature
-- [ ] Phase 5 - Transactions Feature
+- [x] Phase 5 - Transactions Feature
 - [ ] Phase 6 - Insights Feature
 - [ ] Phase 7 - Responsiveness, Accessibility, and Polish
 - [ ] Phase 8 - Final Hardening and Documentation

@@ -17,6 +17,7 @@ interface UseTransactionsResult {
   readonly summary: SummaryMetrics
   readonly totalResults: number
   readonly totalPages: number
+  readonly shouldPaginate: boolean
   readonly currentPage: number
   readonly pageSize: number
   readonly rangeStart: number
@@ -70,7 +71,10 @@ export function useTransactions(): UseTransactionsResult {
   )
 
   const totalResults = filteredTransactions.length
-  const totalPages = Math.max(1, Math.ceil(totalResults / pageSize))
+  const shouldPaginate = totalResults > 20
+  const totalPages = shouldPaginate
+    ? Math.max(1, Math.ceil(totalResults / pageSize))
+    : 1
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -83,12 +87,23 @@ export function useTransactions(): UseTransactionsResult {
   const pageEndIndexExclusive = pageStartIndex + pageSize
 
   const paginatedTransactions = useMemo<readonly Transaction[]>(
-    () => filteredTransactions.slice(pageStartIndex, pageEndIndexExclusive),
-    [filteredTransactions, pageEndIndexExclusive, pageStartIndex],
+    () =>
+      shouldPaginate
+        ? filteredTransactions.slice(pageStartIndex, pageEndIndexExclusive)
+        : filteredTransactions,
+    [
+      filteredTransactions,
+      pageEndIndexExclusive,
+      pageStartIndex,
+      shouldPaginate,
+    ],
   )
 
-  const rangeStart = totalResults === 0 ? 0 : pageStartIndex + 1
-  const rangeEnd = Math.min(pageEndIndexExclusive, totalResults)
+  const rangeStart =
+    totalResults === 0 ? 0 : shouldPaginate ? pageStartIndex + 1 : 1
+  const rangeEnd = shouldPaginate
+    ? Math.min(pageEndIndexExclusive, totalResults)
+    : totalResults
 
   return {
     transactions,
@@ -97,6 +112,7 @@ export function useTransactions(): UseTransactionsResult {
     summary,
     totalResults,
     totalPages,
+    shouldPaginate,
     currentPage: effectivePage,
     pageSize,
     rangeStart,

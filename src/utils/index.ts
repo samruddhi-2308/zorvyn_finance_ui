@@ -10,5 +10,6 @@ export {
   toTimestamp,
 } from './formatDate'
 export { groupBy } from './groupBy'
+export { logger } from './logger'
 export { sortTransactions } from './sortTransactions'
 export { isTransaction, validateTransactions } from './validateTransactions'

@@ -1,10 +1,26 @@
 import type { ReactElement } from 'react'
+import { ROLES } from '@/constants'
+import type { ThemeMode, UserRole } from '@/types'
 
 interface HeaderProps {
   readonly onOpenMobileNav: () => void
+  readonly currentRole: UserRole
+  readonly onRoleChange: (role: UserRole) => void
+  readonly theme: ThemeMode
+  readonly onToggleTheme: () => void
 }
 
-export function Header({ onOpenMobileNav }: HeaderProps): ReactElement {
+function toUserRole(value: string): UserRole {
+  return value === ROLES.ADMIN ? ROLES.ADMIN : ROLES.VIEWER
+}
+
+export function Header({
+  onOpenMobileNav,
+  currentRole,
+  onRoleChange,
+  theme,
+  onToggleTheme,
+}: HeaderProps): ReactElement {
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -41,21 +57,30 @@ export function Header({ onOpenMobileNav }: HeaderProps): ReactElement {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+            onClick={onToggleTheme}
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)]"
+          >
+            {theme === 'light' ? 'Dark' : 'Light'}
+          </button>
+
           <label
-            htmlFor="role-preview"
+            htmlFor="role-switcher"
             className="text-sm font-medium text-[var(--color-text-muted)]"
           >
             Role
           </label>
           <select
-            id="role-preview"
-            aria-label="Role selector preview, state hookup arrives in Phase 3"
-            defaultValue="VIEWER"
-            disabled
-            className="cursor-not-allowed rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-sm text-[var(--color-text-muted)] opacity-70"
+            id="role-switcher"
+            aria-label="Switch active role"
+            value={currentRole}
+            onChange={(event) => onRoleChange(toUserRole(event.target.value))}
+            className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-sm text-[var(--color-text-primary)]"
           >
-            <option value="VIEWER">Viewer (Phase 3)</option>
-            <option value="ADMIN">Admin (Phase 3)</option>
+            <option value={ROLES.VIEWER}>Viewer</option>
+            <option value={ROLES.ADMIN}>Admin</option>
           </select>
         </div>
       </div>

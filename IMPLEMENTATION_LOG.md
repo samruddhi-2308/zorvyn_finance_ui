@@ -93,3 +93,49 @@ This document tracks architecture decisions, phase-by-phase progress, and notabl
 ### Next Milestone
 
 - Begin **Phase 3: State Layer and Hooks** after explicit approval.
+
+## 2026-04-02 - Phase 3: State Layer and Hooks
+
+### Completed
+
+- Installed Zustand and implemented store slices:
+  - [`transaction.store.ts`](./src/store/transaction.store.ts)
+  - [`filter.store.ts`](./src/store/filter.store.ts)
+  - [`role.store.ts`](./src/store/role.store.ts)
+  - [`ui.store.ts`](./src/store/ui.store.ts)
+- Added persist middleware for transaction data, filter state, role, and UI preferences.
+- Added typed transaction CRUD actions with guarded validation and error handling in transaction store.
+- Added custom hooks:
+  - [`useTransactions.ts`](./src/hooks/useTransactions.ts)
+  - [`useFilters.ts`](./src/hooks/useFilters.ts)
+  - [`useInsights.ts`](./src/hooks/useInsights.ts)
+  - [`usePermission.ts`](./src/hooks/usePermission.ts)
+  - [`useDebounce.ts`](./src/hooks/useDebounce.ts)
+  - [`useRole.ts`](./src/hooks/useRole.ts)
+  - [`useUI.ts`](./src/hooks/useUI.ts)
+- Added centralized exports:
+  - [`src/store/index.ts`](./src/store/index.ts)
+  - [`src/hooks/index.ts`](./src/hooks/index.ts)
+- Added [`src/utils/logger.ts`](./src/utils/logger.ts) and routed store operation failures through logger.
+- Updated shell wiring:
+  - Header role selector is now functional via `roleStore`.
+  - Theme toggle now uses `uiStore` and syncs to `data-theme`.
+  - Mobile sidebar open/close now uses `uiStore` instead of component local state.
+  - App shell now reads summary and insight snapshots through hooks.
+
+### Validation
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npm run typecheck` passed.
+- `npm run build` passed (with elevation because sandbox blocks default build spawn on this machine).
+
+### Decisions
+
+- Kept heavy state access out of presentational components by routing access through hooks.
+- Persisted filters and role early to support realistic session continuity in upcoming feature phases.
+- Added guard clauses in store actions to prevent invalid transaction payloads from mutating state.
+
+### Next Milestone
+
+- Begin **Phase 4: Dashboard Overview Feature** after explicit approval.

@@ -33,6 +33,18 @@ export interface Transaction {
   readonly status: TransactionStatus
 }
 
+export interface TransactionDraft {
+  readonly date: string
+  readonly description: string
+  readonly amount: number
+  readonly type: TransactionType
+  readonly category: TransactionCategory
+  readonly paymentMethod: PaymentMethod
+  readonly status?: TransactionStatus
+}
+
+export type TransactionUpdate = Partial<TransactionDraft>
+
 export interface SummaryMetrics {
   readonly totalBalance: number
   readonly totalIncome: number

@@ -1,13 +1,20 @@
-import { useState, type ReactElement } from 'react'
+import { useEffect, useMemo, type ReactElement } from 'react'
 import { Header } from '@/components/layout/Header'
 import { Sidebar } from '@/components/layout/Sidebar'
+import {
+  useInsights,
+  usePermission,
+  useRole,
+  useTransactions,
+  useUI,
+} from '@/hooks'
+import { formatINR } from '@/utils'
 
-const KPI_PLACEHOLDERS = [
-  'Total Balance',
-  'Total Income',
-  'Total Expenses',
-  'Savings Rate',
-] as const
+interface KpiCard {
+  readonly title: string
+  readonly value: string
+  readonly helperText: string
+}
 
 const MODULE_PLACEHOLDERS = [
   {
@@ -24,15 +31,61 @@ const MODULE_PLACEHOLDERS = [
 ] as const
 
 export function AppShell(): ReactElement {
-  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
+  const { currentRole, setRole } = useRole()
+  const {
+    theme,
+    toggleTheme,
+    isMobileSidebarOpen,
+    openMobileSidebar,
+    closeMobileSidebar,
+  } = useUI()
 
-  const openMobileNav = (): void => {
-    setIsMobileNavOpen(true)
-  }
+  const {
+    summary,
+    totalResults,
+    rangeStart,
+    rangeEnd,
+    currentPage,
+    totalPages,
+    paginatedTransactions,
+  } = useTransactions()
+  const insights = useInsights()
+  const canManageTransactions = usePermission('create')
 
-  const closeMobileNav = (): void => {
-    setIsMobileNavOpen(false)
-  }
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
+
+  const kpiCards = useMemo<readonly KpiCard[]>(
+    () => [
+      {
+        title: 'Total Balance',
+        value: formatINR(summary.totalBalance),
+        helperText: 'Computed from all persisted transactions.',
+      },
+      {
+        title: 'Total Income',
+        value: formatINR(summary.totalIncome),
+        helperText: 'Includes Salary, Freelance, and Investments.',
+      },
+      {
+        title: 'Total Expenses',
+        value: formatINR(summary.totalExpenses),
+        helperText: 'Aggregated across all expense categories.',
+      },
+      {
+        title: 'Savings Rate',
+        value: `${(summary.savingsRate * 100).toFixed(1)}%`,
+        helperText: 'Derived from net balance divided by income.',
+      },
+    ],
+    [
+      summary.savingsRate,
+      summary.totalBalance,
+      summary.totalExpenses,
+      summary.totalIncome,
+    ],
+  )
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text-primary)]">
@@ -44,10 +97,19 @@ export function AppShell(): ReactElement {
       </a>
 
       <div className="lg:grid lg:grid-cols-[16rem_1fr]">
-        <Sidebar isOpen={isMobileNavOpen} onCloseMobileNav={closeMobileNav} />
+        <Sidebar
+          isOpen={isMobileSidebarOpen}
+          onCloseMobileNav={closeMobileSidebar}
+        />
 
         <div className="min-h-screen">
-          <Header onOpenMobileNav={openMobileNav} />
+          <Header
+            onOpenMobileNav={openMobileSidebar}
+            currentRole={currentRole}
+            onRoleChange={setRole}
+            theme={theme}
+            onToggleTheme={toggleTheme}
+          />
 
           <main
             id="main-content"
@@ -66,21 +128,22 @@ export function AppShell(): ReactElement {
                   Dashboard Overview
                 </h2>
                 <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                  Phase 1 delivers the architecture and semantic layout shell.
+                  Phase 3 connects the shell to centralized Zustand state and
+                  memoized hooks.
                 </p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {KPI_PLACEHOLDERS.map((cardTitle) => (
-                  <article key={cardTitle} className="surface-card p-4">
+                {kpiCards.map((card) => (
+                  <article key={card.title} className="surface-card p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-                      {cardTitle}
+                      {card.title}
                     </p>
                     <p className="mt-5 text-lg font-semibold text-[var(--color-text-primary)]">
-                      Placeholder
+                      {card.value}
                     </p>
                     <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                      Connected to state in upcoming phases.
+                      {card.helperText}
                     </p>
                   </article>
                 ))}
@@ -97,6 +160,13 @@ export function AppShell(): ReactElement {
                   <h3 className="text-lg font-semibold">{module.title}</h3>
                   <p className="mt-1 text-sm text-[var(--color-text-muted)]">
                     {module.description}
+                  </p>
+                  <p className="mt-2 text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                    {module.id === 'balance-trend'
+                      ? insights.spendingTrend.summary
+                      : `Top expense category: ${
+                          insights.highestSpendingCategory.category ?? 'N/A'
+                        }`}
                   </p>
                   <div
                     className="mt-5 h-64 rounded-lg border border-dashed border-[var(--color-border)] bg-[var(--color-background)]"
@@ -119,9 +189,24 @@ export function AppShell(): ReactElement {
                 Transactions Module Skeleton
               </h3>
               <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-                Table infrastructure, filters, sorting, and CRUD interactions
-                are implemented in later phases.
+                Transaction pagination, role permissions, and derived views are
+                now connected to Phase 3 state hooks.
               </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--color-text-muted)]">
+                <span className="rounded-md border border-[var(--color-border)] px-2 py-1">
+                  Active role: {currentRole}
+                </span>
+                <span className="rounded-md border border-[var(--color-border)] px-2 py-1">
+                  Can manage transactions:{' '}
+                  {canManageTransactions ? 'Yes' : 'No'}
+                </span>
+                <span className="rounded-md border border-[var(--color-border)] px-2 py-1">
+                  Showing {rangeStart}-{rangeEnd} of {totalResults} results
+                </span>
+                <span className="rounded-md border border-[var(--color-border)] px-2 py-1">
+                  Page {currentPage} of {totalPages}
+                </span>
+              </div>
               <div className="mt-5 overflow-x-auto rounded-lg border border-[var(--color-border)]">
                 <table
                   className="min-w-full border-collapse"
@@ -147,15 +232,39 @@ export function AppShell(): ReactElement {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td
-                        colSpan={5}
-                        className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]"
-                      >
-                        Data grid scaffolding complete. Transaction data wiring
-                        starts in Phase 2 and Phase 3.
-                      </td>
-                    </tr>
+                    {paginatedTransactions.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]"
+                        >
+                          No transactions match the active filters.
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedTransactions.slice(0, 3).map((transaction) => (
+                        <tr
+                          key={transaction.id}
+                          className="border-t border-[var(--color-border)]"
+                        >
+                          <td className="px-4 py-3 text-sm">
+                            {transaction.date}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {transaction.description}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {transaction.category}
+                          </td>
+                          <td className="px-4 py-3 text-sm capitalize">
+                            {transaction.type}
+                          </td>
+                          <td className="px-4 py-3 text-right text-sm font-semibold">
+                            {formatINR(transaction.amount)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>

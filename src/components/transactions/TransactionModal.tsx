@@ -1,6 +1,8 @@
 import {
   useEffect,
+  useId,
   useMemo,
+  useRef,
   useState,
   type FormEvent,
   type ReactElement,
@@ -11,6 +13,7 @@ import {
   PAYMENT_METHODS,
   TRANSACTION_STATUSES,
 } from '@/constants'
+import { useFocusTrap } from '@/hooks'
 import type {
   Transaction,
   TransactionCategory,
@@ -126,22 +129,37 @@ export function TransactionModal({
   )
   const [errors, setErrors] = useState<TransactionFormErrors>({})
 
+  const modalPanelRef = useRef<HTMLDivElement | null>(null)
+  const descriptionInputRef = useRef<HTMLInputElement | null>(null)
+
+  const descriptionErrorId = useId()
+  const amountErrorId = useId()
+  const categoryErrorId = useId()
+  const dateErrorId = useId()
+  const formErrorId = useId()
+
+  useFocusTrap(modalPanelRef, isOpen, onClose)
+
   useEffect(() => {
     if (!isOpen) {
       return
     }
 
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        onClose()
-      }
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (!isOpen) {
+      return
     }
 
-    window.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.removeEventListener('keydown', onKeyDown)
-    }
-  }, [isOpen, onClose])
+    descriptionInputRef.current?.focus()
+  }, [isOpen])
 
   const categoryOptions = useMemo<readonly TransactionCategory[]>(
     () =>
@@ -195,14 +213,20 @@ export function TransactionModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="transaction-modal-title"
+      aria-describedby="transaction-modal-description"
     >
       <button
         type="button"
+        tabIndex={-1}
         onClick={onClose}
         className="absolute inset-0 cursor-default"
         aria-label="Close transaction modal backdrop"
       />
-      <div className="relative z-10 w-full max-w-2xl rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card">
+
+      <div
+        ref={modalPanelRef}
+        className="relative z-10 w-full max-w-2xl rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card"
+      >
         <div className="flex items-start justify-between border-b border-[var(--color-border)] px-5 py-4">
           <div>
             <h4
@@ -211,7 +235,10 @@ export function TransactionModal({
             >
               {mode === 'create' ? 'Add Transaction' : 'Edit Transaction'}
             </h4>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+            <p
+              id="transaction-modal-description"
+              className="mt-1 text-sm text-[var(--color-text-muted)]"
+            >
               {mode === 'create'
                 ? 'Provide details to add a new finance record.'
                 : 'Update the transaction details and save changes.'}
@@ -220,10 +247,22 @@ export function TransactionModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-[var(--color-border)] px-2 py-1 text-sm text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)]"
+            className="rounded-lg border border-[var(--color-border)] p-1.5 text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)]"
             aria-label="Close transaction modal"
           >
-            X
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              className="h-4 w-4"
+              aria-hidden="true"
+            >
+              <path
+                d="M5 5L15 15M15 5L5 15"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            </svg>
           </button>
         </div>
 
@@ -234,6 +273,7 @@ export function TransactionModal({
                 Description
               </span>
               <input
+                ref={descriptionInputRef}
                 value={formState.description}
                 onChange={(event) =>
                   setFormState((state) => ({
@@ -243,10 +283,19 @@ export function TransactionModal({
                 }
                 className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
                 placeholder="Transaction description"
+                aria-invalid={errors.description !== undefined}
+                aria-describedby={
+                  errors.description !== undefined
+                    ? descriptionErrorId
+                    : undefined
+                }
                 required
               />
               {errors.description ? (
-                <p className="mt-1 text-xs text-rose-700">
+                <p
+                  id={descriptionErrorId}
+                  className="mt-1 text-xs text-rose-700"
+                >
                   {errors.description}
                 </p>
               ) : null}
@@ -269,10 +318,16 @@ export function TransactionModal({
                 step="0.01"
                 className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
                 placeholder="0.00"
+                aria-invalid={errors.amount !== undefined}
+                aria-describedby={
+                  errors.amount !== undefined ? amountErrorId : undefined
+                }
                 required
               />
               {errors.amount ? (
-                <p className="mt-1 text-xs text-rose-700">{errors.amount}</p>
+                <p id={amountErrorId} className="mt-1 text-xs text-rose-700">
+                  {errors.amount}
+                </p>
               ) : null}
             </label>
 
@@ -324,6 +379,10 @@ export function TransactionModal({
                   }))
                 }
                 className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                aria-invalid={errors.category !== undefined}
+                aria-describedby={
+                  errors.category !== undefined ? categoryErrorId : undefined
+                }
               >
                 {categoryOptions.map((category) => (
                   <option key={category} value={category}>
@@ -332,7 +391,9 @@ export function TransactionModal({
                 ))}
               </select>
               {errors.category ? (
-                <p className="mt-1 text-xs text-rose-700">{errors.category}</p>
+                <p id={categoryErrorId} className="mt-1 text-xs text-rose-700">
+                  {errors.category}
+                </p>
               ) : null}
             </label>
 
@@ -350,9 +411,15 @@ export function TransactionModal({
                 }
                 type="date"
                 className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                aria-invalid={errors.date !== undefined}
+                aria-describedby={
+                  errors.date !== undefined ? dateErrorId : undefined
+                }
               />
               {errors.date ? (
-                <p className="mt-1 text-xs text-rose-700">{errors.date}</p>
+                <p id={dateErrorId} className="mt-1 text-xs text-rose-700">
+                  {errors.date}
+                </p>
               ) : null}
             </label>
 
@@ -403,7 +470,11 @@ export function TransactionModal({
           </div>
 
           {errors.form ? (
-            <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">
+            <p
+              id={formErrorId}
+              role="alert"
+              className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700"
+            >
               {errors.form}
             </p>
           ) : null}
@@ -418,6 +489,9 @@ export function TransactionModal({
             </button>
             <button
               type="submit"
+              aria-describedby={
+                errors.form !== undefined ? formErrorId : undefined
+              }
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
             >
               {mode === 'create' ? 'Add Transaction' : 'Save Changes'}

@@ -13,9 +13,9 @@ export function TransactionsEmptyState({
   onResetFilters,
 }: TransactionsEmptyStateProps): ReactElement {
   return (
-    <div className="mx-4 my-8 flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-background)] px-6 py-10 text-center">
+    <div className="m-4 flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-background)] px-6 py-10 text-center">
       <div
-        className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-700"
+        className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
         aria-hidden="true"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">

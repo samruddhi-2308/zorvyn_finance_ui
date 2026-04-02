@@ -134,7 +134,7 @@ export function SummaryCard({
         className={`absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-lg ${style.iconBg} ${style.iconFg}`}
         aria-hidden="true"
       >
-        <span className="text-sm font-bold">₹</span>
+        <span className="text-xs font-bold uppercase">Rs</span>
       </div>
 
       <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">

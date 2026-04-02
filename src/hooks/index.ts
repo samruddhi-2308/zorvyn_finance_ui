@@ -1,6 +1,7 @@
 export { useDebounce } from './useDebounce'
 export { useDashboardOverview } from './useDashboardOverview'
 export { useFilters } from './useFilters'
+export { useFocusTrap } from './useFocusTrap'
 export { useInsights } from './useInsights'
 export { useInsightsOverview } from './useInsightsOverview'
 export { usePermission } from './usePermission'

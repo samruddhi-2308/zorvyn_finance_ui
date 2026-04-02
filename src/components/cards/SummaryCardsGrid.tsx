@@ -13,9 +13,9 @@ function SummaryCardSkeleton(): ReactElement {
       className="surface-card animate-pulse border p-4"
       aria-label="Loading dashboard summary card"
     >
-      <div className="h-3 w-28 rounded bg-slate-200" />
-      <div className="mt-4 h-8 w-36 rounded bg-slate-200" />
-      <div className="mt-3 h-5 w-40 rounded bg-slate-200" />
+      <div className="h-3 w-28 rounded bg-[var(--color-border)]" />
+      <div className="mt-4 h-8 w-36 rounded bg-[var(--color-border)]" />
+      <div className="mt-3 h-5 w-40 rounded bg-[var(--color-border)]" />
     </article>
   )
 }

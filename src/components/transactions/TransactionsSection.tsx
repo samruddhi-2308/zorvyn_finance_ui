@@ -99,6 +99,26 @@ export function TransactionsSection(): ReactElement {
     }
   }, [])
 
+  useEffect(() => {
+    if (openMenuTransactionId === null) {
+      return
+    }
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') {
+        return
+      }
+
+      setOpenMenuTransactionId(null)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [openMenuTransactionId])
+
   const openCreateModal = (): void => {
     setModalState({
       isOpen: true,
@@ -190,7 +210,7 @@ export function TransactionsSection(): ReactElement {
     <section
       id="transactions-overview"
       aria-labelledby="transactions-overview-title"
-      className="surface-card p-5"
+      className="surface-card section-reveal p-4 sm:p-5"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>

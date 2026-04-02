@@ -1,4 +1,11 @@
-﻿import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react'
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type ReactElement,
+} from 'react'
 import {
   EXPENSE_CATEGORIES,
   INCOME_CATEGORIES,
@@ -65,6 +72,8 @@ export function TransactionsFilters({
 }: TransactionsFiltersProps): ReactElement {
   const [isCategoryPickerOpen, setIsCategoryPickerOpen] = useState(false)
   const categoryPickerRef = useRef<HTMLDivElement | null>(null)
+  const categoryToggleRef = useRef<HTMLButtonElement | null>(null)
+  const categoryListboxId = useId()
 
   useEffect(() => {
     const handleDocumentClick = (event: MouseEvent): void => {
@@ -85,6 +94,40 @@ export function TransactionsFilters({
     }
   }, [])
 
+  useEffect(() => {
+    if (!isCategoryPickerOpen) {
+      return
+    }
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') {
+        return
+      }
+
+      setIsCategoryPickerOpen(false)
+      categoryToggleRef.current?.focus()
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [isCategoryPickerOpen])
+
+  useEffect(() => {
+    if (!isCategoryPickerOpen || !categoryPickerRef.current) {
+      return
+    }
+
+    const firstOption =
+      categoryPickerRef.current.querySelector<HTMLInputElement>(
+        'input[type="checkbox"]',
+      )
+
+    firstOption?.focus()
+  }, [isCategoryPickerOpen])
+
   const categorySummary = useMemo<string>(
     () => buildCategorySummary(activeCategories),
     [activeCategories],
@@ -97,6 +140,17 @@ export function TransactionsFilters({
 
     return activeTypes[0] === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES
   }, [activeTypes])
+
+  useEffect(() => {
+    const visibleCategorySet = new Set(visibleCategories)
+    const normalizedCategories = activeCategories.filter((category) =>
+      visibleCategorySet.has(category),
+    )
+
+    if (normalizedCategories.length !== activeCategories.length) {
+      onCategoryFilterChange(normalizedCategories)
+    }
+  }, [activeCategories, onCategoryFilterChange, visibleCategories])
 
   const toggleCategory = (category: TransactionCategory): void => {
     const isSelected = activeCategories.includes(category)
@@ -135,7 +189,7 @@ export function TransactionsFilters({
       aria-label="Transactions filters and search"
     >
       <div className="grid gap-4 lg:grid-cols-[2fr_1fr_1fr_auto]">
-        <label className="block">
+        <label className="block lg:min-w-0">
           <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
             Search
           </span>
@@ -153,7 +207,7 @@ export function TransactionsFilters({
           <legend className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
             Type
           </legend>
-          <div className="mt-1 inline-flex rounded-lg border border-[var(--color-border)] p-1">
+          <div className="mt-1 inline-flex w-full rounded-lg border border-[var(--color-border)] p-1 sm:w-auto">
             {(['all', 'income', 'expense'] as const).map((type) => {
               const isSelected = isTypeSelected(activeTypes, type)
               const label =
@@ -170,7 +224,7 @@ export function TransactionsFilters({
                   onClick={() =>
                     onTypeFilterChange(type === 'all' ? [] : [type])
                   }
-                  className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${
+                  className={`flex-1 rounded-md px-3 py-1.5 text-sm font-semibold transition sm:flex-none ${
                     isSelected
                       ? 'bg-blue-600 text-white'
                       : 'text-[var(--color-text-muted)] hover:bg-[var(--color-primary-soft)]'
@@ -189,18 +243,36 @@ export function TransactionsFilters({
             Category
           </span>
           <button
+            ref={categoryToggleRef}
             type="button"
             onClick={() => setIsCategoryPickerOpen((value) => !value)}
             className="mt-1 flex w-full items-center justify-between rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-left text-sm text-[var(--color-text-primary)]"
             aria-expanded={isCategoryPickerOpen}
             aria-haspopup="listbox"
+            aria-controls={categoryListboxId}
           >
-            <span>{categorySummary}</span>
-            <span aria-hidden="true">v</span>
+            <span className="truncate">{categorySummary}</span>
+            <svg
+              viewBox="0 0 20 20"
+              fill="none"
+              className={`h-4 w-4 shrink-0 transition-transform ${
+                isCategoryPickerOpen ? 'rotate-180' : ''
+              }`}
+              aria-hidden="true"
+            >
+              <path
+                d="M5 8L10 13L15 8"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
 
           {isCategoryPickerOpen ? (
             <div
+              id={categoryListboxId}
               className="absolute z-30 mt-2 max-h-56 w-full overflow-y-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-card"
               role="listbox"
               aria-label="Category multi-select options"
@@ -230,7 +302,7 @@ export function TransactionsFilters({
         <button
           type="button"
           onClick={onResetFilters}
-          className="h-fit self-end rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-primary-soft)]"
+          className="h-fit rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-primary-soft)] lg:self-end"
         >
           Reset
         </button>

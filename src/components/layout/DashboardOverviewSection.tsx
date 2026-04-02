@@ -35,7 +35,7 @@ function ChartFallbackCard({
       <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
         {title}
       </h3>
-      <div className="mt-4 h-64 rounded-xl bg-slate-200" />
+      <div className="mt-4 h-64 rounded-xl bg-[var(--color-border)]" />
     </article>
   )
 }
@@ -60,7 +60,7 @@ export function DashboardOverviewSection(): ReactElement {
     <section
       id="dashboard-overview"
       aria-labelledby="dashboard-overview-title"
-      className="space-y-4"
+      className="section-reveal space-y-4"
     >
       <div>
         <h2

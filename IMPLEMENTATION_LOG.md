@@ -263,3 +263,49 @@ This document tracks architecture decisions, phase-by-phase progress, and notabl
 ### Next Milestone
 
 - Begin **Phase 7: Responsiveness, Accessibility, and Polish** after explicit approval.
+
+## 2026-04-02 - Phase 7: Responsiveness, Accessibility, and Polish
+
+### Completed
+
+- Enhanced shell responsiveness and navigation accessibility:
+  - header mobile-nav control now reflects expanded state
+  - sidebar active link uses `aria-current`
+  - sidebar closes automatically when viewport transitions to desktop
+  - files: [`AppShell.tsx`](./src/components/layout/AppShell.tsx), [`Header.tsx`](./src/components/layout/Header.tsx), [`Sidebar.tsx`](./src/components/layout/Sidebar.tsx)
+- Added reusable focus-management primitive:
+  - [`useFocusTrap.ts`](./src/hooks/useFocusTrap.ts)
+- Hardened keyboard and focus handling:
+  - focus trap + scroll lock for mobile sidebar
+  - focus trap + scroll lock + initial focus for transaction modal
+  - Escape key support for category picker and transaction action menus
+  - files: [`TransactionModal.tsx`](./src/components/transactions/TransactionModal.tsx), [`TransactionsSection.tsx`](./src/components/transactions/TransactionsSection.tsx), [`TransactionsFilters.tsx`](./src/components/transactions/TransactionsFilters.tsx)
+- Improved transactions responsiveness and semantics:
+  - mobile card-list rendering for small screens
+  - desktop table retains sortable headers with `aria-sort`
+  - row actions updated with clearer icon controls and menu wiring
+  - files: [`TransactionsTable.tsx`](./src/components/transactions/TransactionsTable.tsx), [`TransactionsPagination.tsx`](./src/components/transactions/TransactionsPagination.tsx)
+- Added visual polish and motion refinements:
+  - section reveal animation class
+  - reduced-motion fallback behavior
+  - improved dark-mode card shadows and hover lift
+  - ambient shell background accents
+  - file: [`src/index.css`](./src/index.css)
+- Standardized loading/placeholder tones and corrected currency text token in summary card/icon paths.
+
+### Validation
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npm run typecheck` passed.
+- `npm run build` passed.
+
+### Decisions
+
+- Introduced a reusable focus-trap hook rather than duplicating overlay focus logic in each component.
+- Used dual-render strategy for transactions (mobile cards + desktop table) to preserve dense desktop semantics while improving small-screen usability.
+- Added motion polish with `prefers-reduced-motion` guardrails to maintain accessibility.
+
+### Next Milestone
+
+- Begin **Phase 8: Final Hardening and Documentation** after explicit approval.

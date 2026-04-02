@@ -11,7 +11,8 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
 - Phase 4 complete: **Dashboard Overview Feature**
 - Phase 5 complete: **Transactions Feature**
 - Phase 6 complete: **Insights Feature**
-- Awaiting approval to start **Phase 7: Responsiveness, Accessibility, and Polish**
+- Phase 7 complete: **Responsiveness, Accessibility, and Polish**
+- Awaiting approval to start **Phase 8: Final Hardening and Documentation**
 
 ## Delivery Model
 
@@ -199,6 +200,44 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
   - `npm run typecheck`
   - `npm run build`
 
+## Phase 7 Completed Scope
+
+- Improved responsive UX and mobile navigation behavior:
+  - mobile nav toggle state reflected in header controls
+  - sidebar active-link state with `aria-current`
+  - automatic mobile-sidebar close on desktop viewport transitions
+  - [AppShell.tsx](./src/components/layout/AppShell.tsx)
+  - [Header.tsx](./src/components/layout/Header.tsx)
+  - [Sidebar.tsx](./src/components/layout/Sidebar.tsx)
+- Added reusable keyboard focus trap hook for overlay/drawer workflows:
+  - [useFocusTrap.ts](./src/hooks/useFocusTrap.ts)
+- Hardened keyboard and focus management:
+  - focus trap + scroll lock in mobile sidebar
+  - focus trap + scroll lock + field-first focus in transaction modal
+  - Escape-close behavior for row action menus and category picker
+  - [TransactionModal.tsx](./src/components/transactions/TransactionModal.tsx)
+  - [TransactionsSection.tsx](./src/components/transactions/TransactionsSection.tsx)
+  - [TransactionsFilters.tsx](./src/components/transactions/TransactionsFilters.tsx)
+- Upgraded transactions responsiveness and accessibility:
+  - mobile card-list rendering for transactions
+  - desktop table keeps semantic `aria-sort` sortable headers
+  - improved row-action menu controls and icon affordances
+  - live region on results-range/pagination summary
+  - [TransactionsTable.tsx](./src/components/transactions/TransactionsTable.tsx)
+  - [TransactionsPagination.tsx](./src/components/transactions/TransactionsPagination.tsx)
+- Added polish and motion refinements:
+  - section enter animations via `.section-reveal`
+  - reduced-motion safety overrides
+  - improved dark-theme card shadows and hover lift behavior
+  - ambient background accents in shell
+  - [index.css](./src/index.css)
+- Refined skeleton and empty state tone consistency with theme variables.
+- Validation complete:
+  - `npm run format:check`
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run build`
+
 ## Local Setup
 
 ```bash
@@ -226,5 +265,5 @@ npm run dev
 - [x] Phase 4 complete
 - [x] Phase 5 complete
 - [x] Phase 6 complete
-- [ ] Phase 7 complete
+- [x] Phase 7 complete
 - [ ] Phase 8 complete

@@ -3,7 +3,8 @@ import { ROLES } from '@/constants'
 import type { ThemeMode, UserRole } from '@/types'
 
 interface HeaderProps {
-  readonly onOpenMobileNav: () => void
+  readonly isMobileNavOpen: boolean
+  readonly onToggleMobileNav: () => void
   readonly currentRole: UserRole
   readonly onRoleChange: (role: UserRole) => void
   readonly theme: ThemeMode
@@ -15,7 +16,8 @@ function toUserRole(value: string): UserRole {
 }
 
 export function Header({
-  onOpenMobileNav,
+  isMobileNavOpen,
+  onToggleMobileNav,
   currentRole,
   onRoleChange,
   theme,
@@ -28,9 +30,12 @@ export function Header({
           <button
             type="button"
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)] lg:hidden"
-            onClick={onOpenMobileNav}
-            aria-label="Open navigation menu"
+            onClick={onToggleMobileNav}
+            aria-label={
+              isMobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'
+            }
             aria-controls="primary-sidebar"
+            aria-expanded={isMobileNavOpen}
           >
             <svg
               aria-hidden="true"
@@ -61,6 +66,7 @@ export function Header({
             type="button"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
             onClick={onToggleTheme}
+            aria-pressed={theme === 'dark'}
             className="inline-flex h-9 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)]"
           >
             {theme === 'light' ? 'Dark' : 'Light'}
@@ -68,7 +74,7 @@ export function Header({
 
           <label
             htmlFor="role-switcher"
-            className="text-sm font-medium text-[var(--color-text-muted)]"
+            className="sr-only text-sm font-medium text-[var(--color-text-muted)] sm:not-sr-only"
           >
             Role
           </label>

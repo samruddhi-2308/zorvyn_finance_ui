@@ -24,7 +24,7 @@ export function TransactionsPagination({
 }: TransactionsPaginationProps): ReactElement {
   return (
     <div className="mt-4 flex flex-col gap-3 border-t border-[var(--color-border)] pt-4 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-sm text-[var(--color-text-muted)]">
+      <p className="text-sm text-[var(--color-text-muted)]" aria-live="polite">
         Showing {rangeStart}-{rangeEnd} of {totalResults} results
       </p>
 

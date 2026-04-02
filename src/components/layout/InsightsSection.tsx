@@ -29,7 +29,7 @@ export function InsightsSection(): ReactElement {
     <section
       id="insights-overview"
       aria-labelledby="insights-overview-title"
-      className="space-y-4"
+      className="section-reveal space-y-4"
     >
       <div>
         <h2

@@ -10,10 +10,10 @@ interface HighestSpendingCategoryCardProps {
 function HighestSpendingCategorySkeleton(): ReactElement {
   return (
     <article className="surface-card animate-pulse p-5">
-      <div className="h-5 w-52 rounded bg-slate-200" />
-      <div className="mt-2 h-4 w-48 rounded bg-slate-200" />
-      <div className="mt-4 h-8 w-36 rounded bg-slate-200" />
-      <div className="mt-4 h-2.5 w-full rounded bg-slate-200" />
+      <div className="h-5 w-52 rounded bg-[var(--color-border)]" />
+      <div className="mt-2 h-4 w-48 rounded bg-[var(--color-border)]" />
+      <div className="mt-4 h-8 w-36 rounded bg-[var(--color-border)]" />
+      <div className="mt-4 h-2.5 w-full rounded bg-[var(--color-border)]" />
     </article>
   )
 }

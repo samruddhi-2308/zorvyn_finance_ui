@@ -10,7 +10,8 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
 - Phase 3 complete: **State Layer and Hooks**
 - Phase 4 complete: **Dashboard Overview Feature**
 - Phase 5 complete: **Transactions Feature**
-- Awaiting approval to start **Phase 6: Insights Feature**
+- Phase 6 complete: **Insights Feature**
+- Awaiting approval to start **Phase 7: Responsiveness, Accessibility, and Polish**
 
 ## Delivery Model
 
@@ -171,6 +172,33 @@ Enterprise-grade frontend implementation of a finance dashboard for the internsh
   - `npm run typecheck`
   - `npm run build`
 
+## Phase 6 Completed Scope
+
+- Implemented dedicated insights section container:
+  - [InsightsSection.tsx](./src/components/layout/InsightsSection.tsx)
+- Added insights feature component suite:
+  - [HighestSpendingCategoryCard.tsx](./src/components/insights/HighestSpendingCategoryCard.tsx)
+  - [MonthlyComparisonPanel.tsx](./src/components/insights/MonthlyComparisonPanel.tsx)
+  - [SpendingTrendCard.tsx](./src/components/insights/SpendingTrendCard.tsx)
+  - [TopExpenseCategoriesCard.tsx](./src/components/insights/TopExpenseCategoriesCard.tsx)
+  - [InsightsEmptyState.tsx](./src/components/insights/InsightsEmptyState.tsx)
+- Added insights orchestration hook:
+  - [useInsightsOverview.ts](./src/hooks/useInsightsOverview.ts)
+- Added accessibility-focused narrative labels for:
+  - monthly comparison panel
+  - top expense ranking panel
+- Integrated insights section into shell flow:
+  - [AppShell.tsx](./src/components/layout/AppShell.tsx)
+- Added barrel exports:
+  - [src/components/insights/index.ts](./src/components/insights/index.ts)
+  - [src/components/layout/index.ts](./src/components/layout/index.ts)
+  - [src/hooks/index.ts](./src/hooks/index.ts)
+- Validation complete:
+  - `npm run format:check`
+  - `npm run lint`
+  - `npm run typecheck`
+  - `npm run build`
+
 ## Local Setup
 
 ```bash
@@ -197,6 +225,6 @@ npm run dev
 - [x] Phase 3 complete
 - [x] Phase 4 complete
 - [x] Phase 5 complete
-- [ ] Phase 6 complete
+- [x] Phase 6 complete
 - [ ] Phase 7 complete
 - [ ] Phase 8 complete

@@ -2,6 +2,7 @@ import { useEffect, type ReactElement } from 'react'
 import { TransactionsSection } from '@/components/transactions'
 import { DashboardOverviewSection } from '@/components/layout/DashboardOverviewSection'
 import { Header } from '@/components/layout/Header'
+import { InsightsSection } from '@/components/layout/InsightsSection'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { useRole, useUI } from '@/hooks'
 
@@ -52,6 +53,7 @@ export function AppShell(): ReactElement {
           >
             <DashboardOverviewSection />
             <TransactionsSection />
+            <InsightsSection />
           </main>
         </div>
       </div>

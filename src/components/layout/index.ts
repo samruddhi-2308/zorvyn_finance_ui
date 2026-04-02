@@ -1,4 +1,5 @@
 export { AppShell } from './AppShell'
 export { DashboardOverviewSection } from './DashboardOverviewSection'
 export { Header } from './Header'
+export { InsightsSection } from './InsightsSection'
 export { Sidebar } from './Sidebar'

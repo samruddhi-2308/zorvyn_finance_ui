@@ -225,3 +225,41 @@ This document tracks architecture decisions, phase-by-phase progress, and notabl
 ### Next Milestone
 
 - Begin **Phase 6: Insights Feature** after explicit approval.
+
+## 2026-04-02 - Phase 6: Insights Feature
+
+### Completed
+
+- Implemented insights section in [`InsightsSection.tsx`](./src/components/layout/InsightsSection.tsx).
+- Added modular insights components:
+  - [`HighestSpendingCategoryCard.tsx`](./src/components/insights/HighestSpendingCategoryCard.tsx)
+  - [`MonthlyComparisonPanel.tsx`](./src/components/insights/MonthlyComparisonPanel.tsx)
+  - [`SpendingTrendCard.tsx`](./src/components/insights/SpendingTrendCard.tsx)
+  - [`TopExpenseCategoriesCard.tsx`](./src/components/insights/TopExpenseCategoriesCard.tsx)
+  - [`InsightsEmptyState.tsx`](./src/components/insights/InsightsEmptyState.tsx)
+- Added insights UI orchestration hook [`useInsightsOverview.ts`](./src/hooks/useInsightsOverview.ts).
+- Added accessibility narrative labels for:
+  - monthly comparison panel
+  - top expense categories panel
+- Integrated insights section into shell composition in [`AppShell.tsx`](./src/components/layout/AppShell.tsx).
+- Added/updated barrel exports:
+  - [`src/components/insights/index.ts`](./src/components/insights/index.ts)
+  - [`src/components/layout/index.ts`](./src/components/layout/index.ts)
+  - [`src/hooks/index.ts`](./src/hooks/index.ts)
+
+### Validation
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npm run typecheck` passed.
+- `npm run build` passed.
+
+### Decisions
+
+- Kept insight computations in utility + hook layers and limited components to rendering/view concerns.
+- Used dedicated loading/empty states per panel to keep section resilient under sparse data.
+- Preserved strict semantic landmarks and ARIA text summaries for non-visual insight interpretation.
+
+### Next Milestone
+
+- Begin **Phase 7: Responsiveness, Accessibility, and Polish** after explicit approval.

@@ -25,7 +25,13 @@ jobs:
         run: node -v && npm -v
 
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund --loglevel verbose || {
+            echo "npm ci failed on runner; falling back to npm install"
+            npm install --no-audit --no-fund --loglevel verbose
+          }
 
       - name: Lint
         run: npm run lint

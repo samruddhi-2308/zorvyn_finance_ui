@@ -10,7 +10,7 @@ interface SummaryCardsGridProps {
 function SummaryCardSkeleton(): ReactElement {
   return (
     <article
-      className="surface-card animate-pulse border p-4"
+      className="surface-card loading-shimmer border p-5"
       aria-label="Loading dashboard summary card"
     >
       <div className="h-3 w-28 rounded bg-[var(--color-border)]" />
@@ -29,26 +29,37 @@ export function SummaryCardsGrid({
 }: SummaryCardsGridProps): ReactElement {
   if (isLoading) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }, (_, index) => (
-          <SummaryCardSkeleton key={`summary-skeleton-${index}`} />
+          <div
+            key={`summary-skeleton-${index}`}
+            className="stagger-rise"
+            style={{ animationDelay: `${index * 85}ms` }}
+          >
+            <SummaryCardSkeleton />
+          </div>
         ))}
       </div>
     )
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {cards.map((card) => (
-        <SummaryCard
+    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card, index) => (
+        <div
           key={card.title}
-          title={card.title}
-          value={card.value}
-          trendDirection={card.trendDirection}
-          trendValue={card.trendValue}
-          trendLabel={card.trendLabel}
-          colorVariant={card.colorVariant}
-        />
+          className="stagger-rise"
+          style={{ animationDelay: `${index * 85}ms` }}
+        >
+          <SummaryCard
+            title={card.title}
+            value={card.value}
+            trendDirection={card.trendDirection}
+            trendValue={card.trendValue}
+            trendLabel={card.trendLabel}
+            colorVariant={card.colorVariant}
+          />
+        </div>
       ))}
     </div>
   )

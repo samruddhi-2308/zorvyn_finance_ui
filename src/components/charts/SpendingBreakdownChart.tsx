@@ -33,7 +33,7 @@ function getChartColor(index: number): string {
 
 function SpendingBreakdownSkeleton(): ReactElement {
   return (
-    <article className="surface-card animate-pulse p-5">
+    <article className="surface-card loading-shimmer p-6">
       <div className="h-5 w-48 rounded bg-[var(--color-border)]" />
       <div className="mt-2 h-4 w-72 rounded bg-[var(--color-border)]" />
       <div className="mt-6 h-64 rounded-xl bg-[var(--color-border)]" />
@@ -43,7 +43,7 @@ function SpendingBreakdownSkeleton(): ReactElement {
 
 function SpendingBreakdownEmptyState(): ReactElement {
   return (
-    <article className="surface-card p-5">
+    <article className="surface-card p-6">
       <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
         Spending Breakdown
       </h3>
@@ -78,7 +78,7 @@ export function SpendingBreakdownChart({
   }
 
   return (
-    <article className="surface-card p-5">
+    <article className="surface-card p-6">
       <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
         Spending Breakdown
       </h3>

@@ -29,7 +29,7 @@ export function InsightsSection(): ReactElement {
     <section
       id="insights-overview"
       aria-labelledby="insights-overview-title"
-      className="section-reveal space-y-4"
+      className="section-reveal space-y-7"
     >
       <div>
         <h2
@@ -47,8 +47,8 @@ export function InsightsSection(): ReactElement {
       {!isLoading && !hasAnyInsightData ? (
         <InsightsEmptyState />
       ) : (
-        <div className="grid gap-6 xl:grid-cols-12">
-          <div className="space-y-6 xl:col-span-4">
+        <div className="grid gap-8 xl:grid-cols-12">
+          <div className="space-y-8 xl:col-span-4">
             <HighestSpendingCategoryCard
               insight={highestSpendingCategory}
               isLoading={isLoading}
@@ -56,7 +56,7 @@ export function InsightsSection(): ReactElement {
             <SpendingTrendCard trend={spendingTrend} isLoading={isLoading} />
           </div>
 
-          <div className="space-y-6 xl:col-span-8">
+          <div className="space-y-8 xl:col-span-8">
             <MonthlyComparisonPanel
               entries={monthlyComparison}
               bestMonth={bestMonth}

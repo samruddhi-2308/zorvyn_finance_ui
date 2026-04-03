@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type ReactElement } from 'react'
 import { useFilters, usePermission, useTransactions } from '@/hooks'
 import type { TransactionDraft, TransactionSortKey } from '@/types'
+import { exportTransactionsToCsv } from '@/utils'
 import { TransactionModal } from './TransactionModal'
 import { TransactionsFilters } from './TransactionsFilters'
 import { TransactionsPagination } from './TransactionsPagination'
@@ -28,6 +29,22 @@ function hasActiveFilters(
   )
 }
 
+function TransactionsLoadingState(): ReactElement {
+  return (
+    <div className="space-y-6" aria-live="polite">
+      <div className="surface-card loading-shimmer p-6">
+        <div className="h-5 w-48 rounded bg-[var(--color-border)]" />
+        <div className="mt-3 h-10 w-full rounded bg-[var(--color-border)]" />
+      </div>
+      <div className="surface-card loading-shimmer p-6">
+        <div className="h-5 w-32 rounded bg-[var(--color-border)]" />
+        <div className="mt-3 h-56 w-full rounded bg-[var(--color-border)]" />
+      </div>
+      <div className="h-8 w-56 rounded bg-[var(--color-border)]" />
+    </div>
+  )
+}
+
 /**
  * End-to-end transactions feature section: filters, table, pagination, and CRUD modal.
  */
@@ -51,6 +68,7 @@ export function TransactionsSection(): ReactElement {
 
   const {
     transactions,
+    filteredTransactions,
     paginatedTransactions,
     totalResults,
     totalPages,
@@ -67,6 +85,10 @@ export function TransactionsSection(): ReactElement {
   const [openMenuTransactionId, setOpenMenuTransactionId] = useState<
     string | null
   >(null)
+  const [tableDensity, setTableDensity] = useState<'comfortable' | 'compact'>(
+    'comfortable',
+  )
+  const [isSectionLoading, setIsSectionLoading] = useState(true)
   const [modalState, setModalState] =
     useState<TransactionModalState>(initialModalState)
 
@@ -80,6 +102,16 @@ export function TransactionsSection(): ReactElement {
     () => ({ sortBy, sortDirection }),
     [sortBy, sortDirection],
   )
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setIsSectionLoading(false)
+    }, 320)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [])
 
   useEffect(() => {
     const handleDocumentClick = (event: MouseEvent): void => {
@@ -206,13 +238,18 @@ export function TransactionsSection(): ReactElement {
     }
   }
 
+  const exportCurrentResults = (): void => {
+    exportTransactionsToCsv(filteredTransactions, 'zorvyn-transactions')
+  }
+
   return (
     <section
       id="transactions-overview"
       aria-labelledby="transactions-overview-title"
-      className="surface-card section-reveal p-4 sm:p-5"
+      className="surface-card section-reveal p-6 sm:p-7 lg:p-8"
+      aria-busy={isSectionLoading}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3
             id="transactions-overview-title"
@@ -225,53 +262,95 @@ export function TransactionsSection(): ReactElement {
             controls.
           </p>
         </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-1">
+            {(['comfortable', 'compact'] as const).map((density) => {
+              const isSelected = density === tableDensity
 
-        {canCreateTransactions ? (
-          <button
-            type="button"
-            onClick={openCreateModal}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-            aria-label="Add transaction"
-          >
-            Add Transaction
-          </button>
-        ) : null}
+              return (
+                <button
+                  key={density}
+                  type="button"
+                  onClick={() => setTableDensity(density)}
+                  className={`rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.05em] transition ${
+                    isSelected
+                      ? 'bg-blue-600 text-white'
+                      : 'text-[var(--color-text-muted)] hover:bg-[var(--color-primary-soft)]'
+                  }`}
+                  aria-pressed={isSelected}
+                >
+                  {density}
+                </button>
+              )
+            })}
+          </div>
+
+          {canCreateTransactions ? (
+            <button
+              type="button"
+              onClick={exportCurrentResults}
+              disabled={filteredTransactions.length === 0}
+              className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-primary-soft)] disabled:cursor-not-allowed disabled:opacity-60"
+              aria-label="Export currently filtered transactions as CSV"
+            >
+              Export CSV
+            </button>
+          ) : null}
+
+          {canCreateTransactions ? (
+            <button
+              type="button"
+              onClick={openCreateModal}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+              aria-label="Add transaction"
+            >
+              Add Transaction
+            </button>
+          ) : null}
+        </div>
       </div>
 
-      <div className="mt-5 space-y-4">
-        <TransactionsFilters
-          searchQuery={searchQuery}
-          activeTypes={activeTypes}
-          activeCategories={activeCategories}
-          dateRange={dateRange}
-          onSearchChange={setSearchQuery}
-          onTypeFilterChange={setTypeFilter}
-          onCategoryFilterChange={setCategoryFilter}
-          onDateRangeChange={setDateRange}
-          onResetFilters={resetFilters}
-        />
+      {isSectionLoading ? (
+        <div className="mt-7">
+          <TransactionsLoadingState />
+        </div>
+      ) : (
+        <div className="mt-7 space-y-6">
+          <TransactionsFilters
+            searchQuery={searchQuery}
+            activeTypes={activeTypes}
+            activeCategories={activeCategories}
+            dateRange={dateRange}
+            onSearchChange={setSearchQuery}
+            onTypeFilterChange={setTypeFilter}
+            onCategoryFilterChange={setCategoryFilter}
+            onDateRangeChange={setDateRange}
+            onResetFilters={resetFilters}
+          />
 
-        <TransactionsTable
-          transactions={paginatedTransactions}
-          sortState={sortedState}
-          isAdmin={canCreateTransactions}
-          openMenuTransactionId={openMenuTransactionId}
-          hasActiveFilters={activeFilterState}
-          onSortChange={onSortChange}
-          onRowAction={onRowAction}
-          onResetFilters={resetFilters}
-        />
+          <TransactionsTable
+            transactions={paginatedTransactions}
+            sortState={sortedState}
+            isAdmin={canCreateTransactions}
+            openMenuTransactionId={openMenuTransactionId}
+            hasActiveFilters={activeFilterState}
+            density={tableDensity}
+            onSortChange={onSortChange}
+            onRowAction={onRowAction}
+            onResetFilters={resetFilters}
+          />
 
-        <TransactionsPagination
-          shouldPaginate={shouldPaginate}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          rangeStart={rangeStart}
-          rangeEnd={rangeEnd}
-          totalResults={totalResults}
-          onPageChange={setPage}
-        />
-      </div>
+          <TransactionsPagination
+            shouldPaginate={shouldPaginate}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            rangeStart={rangeStart}
+            rangeEnd={rangeEnd}
+            totalResults={totalResults}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
 
       <TransactionModal
         key={`${modalState.mode}-${modalState.transaction?.id ?? 'new'}-${String(modalState.isOpen)}`}

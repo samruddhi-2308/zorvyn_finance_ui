@@ -6,11 +6,15 @@ interface UIStoreState {
   readonly theme: ThemeMode
   readonly isMobileSidebarOpen: boolean
   readonly isSidebarCollapsed: boolean
+  readonly isHelpPanelOpen: boolean
   setTheme: (theme: ThemeMode) => void
   toggleTheme: () => void
   openMobileSidebar: () => void
   closeMobileSidebar: () => void
   toggleSidebarCollapsed: () => void
+  openHelpPanel: () => void
+  closeHelpPanel: () => void
+  toggleHelpPanel: () => void
 }
 
 export const useUIStore = create<UIStoreState>()(
@@ -19,6 +23,7 @@ export const useUIStore = create<UIStoreState>()(
       theme: 'light',
       isMobileSidebarOpen: false,
       isSidebarCollapsed: false,
+      isHelpPanelOpen: false,
 
       setTheme(theme: ThemeMode): void {
         set({ theme })
@@ -41,6 +46,20 @@ export const useUIStore = create<UIStoreState>()(
       toggleSidebarCollapsed(): void {
         set((state) => ({
           isSidebarCollapsed: !state.isSidebarCollapsed,
+        }))
+      },
+
+      openHelpPanel(): void {
+        set({ isHelpPanelOpen: true })
+      },
+
+      closeHelpPanel(): void {
+        set({ isHelpPanelOpen: false })
+      },
+
+      toggleHelpPanel(): void {
+        set((state) => ({
+          isHelpPanelOpen: !state.isHelpPanelOpen,
         }))
       },
     }),

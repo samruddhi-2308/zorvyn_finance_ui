@@ -127,7 +127,7 @@ export function SummaryCard({
 
   return (
     <article
-      className={`surface-card relative overflow-hidden border bg-gradient-to-br p-4 ${style.accent}`}
+      className={`surface-card relative overflow-hidden border bg-gradient-to-br p-5 ${style.accent}`}
       aria-label={`${title}: ${value}`}
     >
       <div
@@ -140,11 +140,11 @@ export function SummaryCard({
       <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
         {title}
       </p>
-      <p className="mt-4 text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
+      <p className="mt-5 text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
         {value}
       </p>
 
-      <div className="mt-3 flex items-center gap-2">
+      <div className="mt-4 flex items-center gap-2">
         <span
           className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${getDirectionClass(trendDirection)}`}
         >

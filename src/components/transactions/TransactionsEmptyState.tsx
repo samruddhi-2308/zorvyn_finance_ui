@@ -13,7 +13,7 @@ export function TransactionsEmptyState({
   onResetFilters,
 }: TransactionsEmptyStateProps): ReactElement {
   return (
-    <div className="m-4 flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-background)] px-6 py-10 text-center">
+    <div className="section-reveal m-5 flex flex-col items-center justify-center rounded-xl border border-dashed border-[var(--color-border)] bg-[var(--color-background)] px-7 py-12 text-center">
       <div
         className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
         aria-hidden="true"

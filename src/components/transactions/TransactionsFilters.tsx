@@ -185,15 +185,16 @@ export function TransactionsFilters({
 
   return (
     <section
-      className="surface-card p-4"
+      className="surface-card p-6"
       aria-label="Transactions filters and search"
     >
-      <div className="grid gap-4 lg:grid-cols-[2fr_1fr_1fr_auto]">
+      <div className="grid gap-5 lg:grid-cols-[2fr_1fr_1fr_auto]">
         <label className="block lg:min-w-0">
           <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
             Search
           </span>
           <input
+            id="transactions-search-input"
             type="search"
             value={searchQuery}
             onChange={(event) => onSearchChange(event.target.value)}
@@ -308,7 +309,7 @@ export function TransactionsFilters({
         </button>
       </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+      <div className="mt-5 grid gap-5 sm:grid-cols-2">
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
             Start Date

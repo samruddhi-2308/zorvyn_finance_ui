@@ -1,10 +1,13 @@
 import type { ReactElement } from 'react'
 import { ROLES } from '@/constants'
 import type { ThemeMode, UserRole } from '@/types'
+import { BrandLogo } from './BrandLogo'
 
 interface HeaderProps {
   readonly isMobileNavOpen: boolean
   readonly onToggleMobileNav: () => void
+  readonly isHelpPanelOpen: boolean
+  readonly onToggleHelpPanel: () => void
   readonly currentRole: UserRole
   readonly onRoleChange: (role: UserRole) => void
   readonly theme: ThemeMode
@@ -18,6 +21,8 @@ function toUserRole(value: string): UserRole {
 export function Header({
   isMobileNavOpen,
   onToggleMobileNav,
+  isHelpPanelOpen,
+  onToggleHelpPanel,
   currentRole,
   onRoleChange,
   theme,
@@ -25,8 +30,8 @@ export function Header({
 }: HeaderProps): ReactElement {
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--color-border)] bg-[var(--color-surface)]/95 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3">
+      <div className="mx-auto flex min-h-20 w-full max-w-screen-2xl items-center justify-between px-5 py-3 sm:px-7 lg:px-10">
+        <div className="flex items-center gap-4">
           <button
             type="button"
             className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)] lg:hidden"
@@ -51,17 +56,22 @@ export function Header({
               />
             </svg>
           </button>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-text-muted)]">
-              Zorvyn Finance
-            </p>
-            <h1 className="text-base font-semibold text-[var(--color-text-primary)]">
-              Finance Dashboard
-            </h1>
-          </div>
+
+          <BrandLogo compact />
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={onToggleHelpPanel}
+            aria-label={isHelpPanelOpen ? 'Close help panel' : 'Open help panel'}
+            aria-pressed={isHelpPanelOpen}
+            aria-controls="help-panel"
+            className="hidden h-9 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)] sm:inline-flex sm:items-center sm:justify-center"
+          >
+            Help
+          </button>
+
           <button
             type="button"
             aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}

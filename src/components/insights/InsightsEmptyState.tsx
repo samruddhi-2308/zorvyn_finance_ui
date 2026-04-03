@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
  */
 export function InsightsEmptyState(): ReactElement {
   return (
-    <article className="surface-card border-dashed p-6 text-center">
+    <article className="surface-card section-reveal border-dashed p-7 text-center">
       <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
         Insights Not Available
       </h3>

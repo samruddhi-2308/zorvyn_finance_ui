@@ -14,7 +14,7 @@ const SpendingBreakdownChart = lazy(async () => {
 
 function DashboardEmptyState(): ReactElement {
   return (
-    <article className="surface-card border-dashed p-6 text-center">
+    <article className="surface-card section-reveal border-dashed p-7 text-center">
       <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
         Dashboard Data Unavailable
       </h3>
@@ -31,7 +31,7 @@ function ChartFallbackCard({
   readonly title: string
 }): ReactElement {
   return (
-    <article className="surface-card animate-pulse p-5">
+    <article className="surface-card loading-shimmer p-5">
       <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
         {title}
       </h3>
@@ -60,7 +60,7 @@ export function DashboardOverviewSection(): ReactElement {
     <section
       id="dashboard-overview"
       aria-labelledby="dashboard-overview-title"
-      className="section-reveal space-y-4"
+      className="section-reveal space-y-7"
     >
       <div>
         <h2
@@ -80,7 +80,7 @@ export function DashboardOverviewSection(): ReactElement {
         <>
           <SummaryCardsGrid cards={summaryCards} isLoading={isLoading} />
 
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="grid gap-8 xl:grid-cols-2">
             <Suspense fallback={<ChartFallbackCard title="Balance Trend" />}>
               <BalanceTrendChart
                 data={balanceTrendData}

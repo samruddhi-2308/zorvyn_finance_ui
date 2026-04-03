@@ -1,6 +1,6 @@
 # 📋 Product Requirements Document
 
-## Zorvyn — Finance Dashboard UI
+## Zorvyn -Finance Dashboard UI
 
 **For:** GitHub Copilot / AI-assisted development  
 **Author:** Principal Frontend Engineer  
@@ -11,7 +11,7 @@
 
 ## 1. Project Overview
 
-Build a **Finance Dashboard UI** as a frontend-only, single-page application. The product simulates a personal finance tracker for a fintech company (Zorvyn). It must be evaluated as enterprise-grade code — not a toy prototype.
+Build a **Finance Dashboard UI** as a frontend-only, single-page application. The product simulates a personal finance tracker for a fintech company (Zorvyn). It must be evaluated as enterprise-grade code -not a toy prototype.
 
 **This is not a design exercise. It is an engineering exercise that also looks good.**
 
@@ -25,8 +25,8 @@ Build a **Finance Dashboard UI** as a frontend-only, single-page application. Th
 | Styling          | **Tailwind CSS** + CSS custom properties (`--var`) for theming               |
 | State Management | **Zustand** (lightweight, no boilerplate)                                    |
 | Charts           | **Recharts** (composable, declarative)                                       |
-| Language         | **JavaScript (ES2022+)** — no TypeScript required but JSDoc types encouraged |
-| Data             | **Static mock data** — JSON files, no backend                                |
+| Language         | **JavaScript (ES2022+)** -no TypeScript required but JSDoc types encouraged |
+| Data             | **Static mock data** -JSON files, no backend                                |
 | Routing          | **React Router v6** (optional, or conditional rendering)                     |
 | Build Tool       | **Vite**                                                                     |
 | Linting          | **ESLint** with Airbnb config                                                |
@@ -58,24 +58,24 @@ These mirror Zorvyn's enterprise engineering standards:
 
 ### 3.2 State Management
 
-- **All app state lives in Zustand store** — never in scattered local `useState` unless strictly component-local (e.g., tooltip hover)
+- **All app state lives in Zustand store** -never in scattered local `useState` unless strictly component-local (e.g., tooltip hover)
 - State slices:
-  - `transactionStore` — raw transactions array, CRUD operations
-  - `filterStore` — active filters, search query, sort direction
-  - `roleStore` — current active role (`VIEWER` | `ADMIN`)
-  - `uiStore` — theme, sidebar open/close
+  - `transactionStore` -raw transactions array, CRUD operations
+  - `filterStore` -active filters, search query, sort direction
+  - `roleStore` -current active role (`VIEWER` | `ADMIN`)
+  - `uiStore` -theme, sidebar open/close
 
 ### 3.3 Data Flow
 
 - Components **never fetch or transform data directly**
 - All data access via **custom hooks** that talk to the Zustand store
-- Utilities handle all formatting and computation — components only render
+- Utilities handle all formatting and computation -components only render
 
 ### 3.4 Performance
 
 - Use **`useMemo`** for derived data (filtered lists, computed totals, grouped categories)
 - Use **`useCallback`** for event handlers passed as props
-- Use **event delegation** for transaction list interactions — do not attach per-row listeners
+- Use **event delegation** for transaction list interactions -do not attach per-row listeners
 - Use **`DocumentFragment`** pattern (or React's virtual DOM batching) for large list renders
 
 ### 3.5 Accessibility
@@ -89,7 +89,7 @@ These mirror Zorvyn's enterprise engineering standards:
 ### 3.6 Error Handling
 
 - Every data operation wrapped in try/catch
-- UI never crashes — always renders a graceful empty state or error message
+- UI never crashes -always renders a graceful empty state or error message
 - Empty states: illustrated, not blank (icon + message + optional CTA)
 
 ### 3.7 CSS Architecture
@@ -109,7 +109,7 @@ These mirror Zorvyn's enterprise engineering standards:
       0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
   }
   ```
-- No magic numbers in components — always reference a variable or a Tailwind token
+- No magic numbers in components -always reference a variable or a Tailwind token
 
 ---
 
@@ -182,7 +182,7 @@ Render 4 KPI cards at the top:
 // Renders: icon, title, formatted value, trend badge (e.g., "+12% vs last month")
 ```
 
-#### 5.1.2 Time-Based Visualization — Balance Trend Chart
+#### 5.1.2 Time-Based Visualization -Balance Trend Chart
 
 - **Chart type:** `AreaChart` (Recharts)
 - **X-axis:** Month (Apr, May, Jun)
@@ -191,9 +191,9 @@ Render 4 KPI cards at the top:
 - **Tooltip:** Shows exact values on hover
 - **Responsive:** Uses `ResponsiveContainer` with `width="100%" height={280}`
 
-#### 5.1.3 Categorical Visualization — Spending Breakdown Chart
+#### 5.1.3 Categorical Visualization -Spending Breakdown Chart
 
-- **Chart type:** `PieChart` with `Cell` components for colors OR `BarChart` — your choice
+- **Chart type:** `PieChart` with `Cell` components for colors OR `BarChart` -your choice
 - **Data:** Total spend per category
 - **Legend:** Color-coded, positioned right or bottom
 - **Click interaction:** Clicking a segment filters the transaction list to that category
@@ -219,7 +219,7 @@ Render transactions in a styled table or card list. Each row must show:
 
 - Real-time search input
 - Searches across: `description`, `category`
-- Debounced — use a `useDebounce` custom hook (300ms delay) — do **not** filter on every keystroke without debounce
+- Debounced -use a `useDebounce` custom hook (300ms delay) -do **not** filter on every keystroke without debounce
 
 #### 5.2.3 Filters
 
@@ -229,7 +229,7 @@ Provide filter controls for:
 - **Category:** Dropdown multi-select
 - **Date Range:** Start date + End date (native `<input type="date">`)
 
-All filters are composable — they AND together.
+All filters are composable -they AND together.
 
 #### 5.2.4 Sorting
 
@@ -249,7 +249,7 @@ Visible only when role = `ADMIN`. A "Add Transaction" button opens a modal form 
 - Category (select dropdown)
 - Date (date picker, defaults to today)
 
-Validation: All required fields checked before submission. Errors shown inline below each field. On submit, dispatch to Zustand store — new transaction appears instantly.
+Validation: All required fields checked before submission. Errors shown inline below each field. On submit, dispatch to Zustand store -new transaction appears instantly.
 
 #### 5.2.7 Admin-only: Edit / Delete
 
@@ -292,7 +292,7 @@ Changing the role updates `roleStore.currentRole` and triggers re-renders.
 | Delete transaction | ❌ (hidden) | ✅            |
 | Export data        | ❌ (hidden) | ✅ (optional) |
 
-Use a `useRole` hook or `usePermission(action)` utility that returns `true/false` — never inline the role check directly in JSX everywhere.
+Use a `useRole` hook or `usePermission(action)` utility that returns `true/false` -never inline the role check directly in JSX everywhere.
 
 ```js
 // hooks/usePermission.js
@@ -314,30 +314,30 @@ export function usePermission(action) {
 
 Show 4 insight cards computed from transaction data:
 
-#### Insight 1 — Highest Spending Category
+#### Insight 1 -Highest Spending Category
 
 - Category name + icon
 - Total spent: ₹XX,XXX
 - % of total expenses: XX%
 - Visual: horizontal progress bar
 
-#### Insight 2 — Monthly Comparison
+#### Insight 2 -Monthly Comparison
 
 - Table or grouped bar chart: April vs May vs June
 - Columns: Income, Expenses, Net
 - Highlight the best and worst month
 
-#### Insight 3 — Spending Trend
+#### Insight 3 -Spending Trend
 
 - "Your spending increased by 18% compared to last month" (derived from data)
 - Color: green if decreased, red if increased
 
-#### Insight 4 — Top 3 Expense Categories
+#### Insight 4 -Top 3 Expense Categories
 
 - Ranked list with amounts and bars
 - Each shows percentage of total spend
 
-All insights are **computed in a `useInsights` hook** using `useMemo` — never computed in the component body.
+All insights are **computed in a `useInsights` hook** using `useMemo` -never computed in the component body.
 
 ---
 
@@ -398,7 +398,7 @@ const useTransactionStore = create(persist((set) => ({ ... }), { name: 'zorvyn-t
 
 ## 6. UI/UX Design Direction
 
-**Aesthetic:** Clean, professional, fintech-grade. Think Razorpay Dashboard or Groww — not a beginner project.
+**Aesthetic:** Clean, professional, fintech-grade. Think Razorpay Dashboard or Groww -not a beginner project.
 
 - **Font:** Inter (Google Fonts)
 - **Color palette:** Indigo primary, slate gray backgrounds, green/red for income/expense
@@ -406,7 +406,7 @@ const useTransactionStore = create(persist((set) => ({ ... }), { name: 'zorvyn-t
 - **Charts:** Recharts with custom colors matching CSS variables
 - **Micro-interactions:** Hover states on cards (lift shadow), smooth filter transitions, modal fade-in
 - **Empty states:** Icon + descriptive message + action button (e.g., "No transactions found. Try adjusting your filters.")
-- **Loading states:** Skeleton shimmer placeholders (even for mock data — show briefly on mount)
+- **Loading states:** Skeleton shimmer placeholders (even for mock data -show briefly on mount)
 
 ---
 
@@ -421,9 +421,9 @@ const useTransactionStore = create(persist((set) => ({ ... }), { name: 'zorvyn-t
 
 ### Code Standards
 
-- **No `any`-equivalent patterns** — always handle the undefined/null case
-- **No inline styles** — Tailwind classes or CSS variables only
-- **No `console.log` in production code** — use a `logger` utility
+- **No `any`-equivalent patterns** -always handle the undefined/null case
+- **No inline styles** -Tailwind classes or CSS variables only
+- **No `console.log` in production code** -use a `logger` utility
 - **JSDoc for all exported functions:**
   ```js
   /**
@@ -463,12 +463,12 @@ The README.md must include:
    npm install
    npm run dev
    ```
-5. **Architecture overview** — folder structure with brief descriptions
-6. **Feature list** — what's implemented
-7. **Role switching instructions** — how to toggle roles
-8. **Design decisions** — why Zustand over Redux, why Recharts, any trade-offs
-9. **Optional features implemented** — which of the optional items were built
-10. **Known limitations** — be honest about what wasn't completed and why
+5. **Architecture overview** -folder structure with brief descriptions
+6. **Feature list** -what's implemented
+7. **Role switching instructions** -how to toggle roles
+8. **Design decisions** -why Zustand over Redux, why Recharts, any trade-offs
+9. **Optional features implemented** -which of the optional items were built
+10. **Known limitations** -be honest about what wasn't completed and why
 
 ---
 
@@ -493,7 +493,7 @@ The README.md must include:
 - Authentication / JWT
 - Real database
 - SSR / Next.js (Vite SPA only)
-- Testing (unit/integration) — not required for submission but code should be testable
+- Testing (unit/integration) -not required for submission but code should be testable
 
 ---
 
@@ -513,23 +513,23 @@ The README.md must include:
 
 Follow this order to avoid dependency issues:
 
-1. **Project scaffold** — `npm create vite@latest`, install dependencies, set up Tailwind, configure folder structure
-2. **Mock data** — create `transactions.json` with 40+ entries
-3. **Zustand stores** — transaction, filter, role, ui slices
-4. **Utility functions** — format, compute, filter utils
-5. **Custom hooks** — `useTransactions`, `useFilters`, `useInsights`, `usePermission`
-6. **Layout components** — Sidebar, Header, RoleSwitcher, Layout wrapper
-7. **Summary Cards** — SummaryCard component + dashboard grid
-8. **Charts** — BalanceTrendChart, SpendingPieChart
-9. **Transaction list** — table, search, filters, sort, pagination
-10. **Add/Edit modal** — form with validation (admin only)
-11. **Insights section** — 4 insight cards with computed data
-12. **Responsiveness** — mobile sidebar drawer, breakpoint adjustments
-13. **Dark mode** — CSS variable swap, toggle, persistence
-14. **Data persistence** — Zustand persist middleware
-15. **README** — document everything
-16. **Polish** — empty states, loading skeletons, ARIA labels, hover micro-interactions
+1. **Project scaffold** -`npm create vite@latest`, install dependencies, set up Tailwind, configure folder structure
+2. **Mock data** -create `transactions.json` with 40+ entries
+3. **Zustand stores** -transaction, filter, role, ui slices
+4. **Utility functions** -format, compute, filter utils
+5. **Custom hooks** -`useTransactions`, `useFilters`, `useInsights`, `usePermission`
+6. **Layout components** -Sidebar, Header, RoleSwitcher, Layout wrapper
+7. **Summary Cards** -SummaryCard component + dashboard grid
+8. **Charts** -BalanceTrendChart, SpendingPieChart
+9. **Transaction list** -table, search, filters, sort, pagination
+10. **Add/Edit modal** -form with validation (admin only)
+11. **Insights section** -4 insight cards with computed data
+12. **Responsiveness** -mobile sidebar drawer, breakpoint adjustments
+13. **Dark mode** -CSS variable swap, toggle, persistence
+14. **Data persistence** -Zustand persist middleware
+15. **README** -document everything
+16. **Polish** -empty states, loading skeletons, ARIA labels, hover micro-interactions
 
 ---
 
-_End of PRD — This document is the single source of truth for the Zorvyn Finance Dashboard UI assignment._
+_End of PRD -This document is the single source of truth for the Zorvyn Finance Dashboard UI assignment._

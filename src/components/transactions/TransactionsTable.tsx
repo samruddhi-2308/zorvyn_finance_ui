@@ -10,6 +10,7 @@ interface TransactionsTableProps {
   readonly isAdmin: boolean
   readonly openMenuTransactionId: string | null
   readonly hasActiveFilters: boolean
+  readonly density: 'comfortable' | 'compact'
   readonly onSortChange: (column: TransactionSortKey) => void
   readonly onRowAction: (
     action: TransactionRowAction,
@@ -168,10 +169,13 @@ export function TransactionsTable({
   isAdmin,
   openMenuTransactionId,
   hasActiveFilters,
+  density,
   onSortChange,
   onRowAction,
   onResetFilters,
 }: TransactionsTableProps): ReactElement {
+  const rowPaddingClass = density === 'comfortable' ? 'px-4 py-4' : 'px-4 py-2.5'
+
   if (transactions.length === 0) {
     return (
       <div className="overflow-x-auto rounded-xl border border-[var(--color-border)]">
@@ -185,14 +189,14 @@ export function TransactionsTable({
 
   return (
     <>
-      <div className="space-y-3 lg:hidden" aria-label="Transactions list">
+      <div className="space-y-4 lg:hidden" aria-label="Transactions list">
         {transactions.map((transaction) => {
           const isMenuOpen = openMenuTransactionId === transaction.id
 
           return (
             <article
               key={transaction.id}
-              className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
+              className={`rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] ${density === 'comfortable' ? 'p-5' : 'p-4'}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -213,7 +217,7 @@ export function TransactionsTable({
                 ) : null}
               </div>
 
-              <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
+              <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
                     Category
@@ -291,7 +295,7 @@ export function TransactionsTable({
                     <th
                       key={column}
                       scope="col"
-                      className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]"
+                      className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]"
                     >
                       {staticLabel}
                     </th>
@@ -311,7 +315,7 @@ export function TransactionsTable({
                     key={column}
                     scope="col"
                     aria-sort={getAriaSort(sortState, column)}
-                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]"
+                    className="px-4 py-4 text-left text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]"
                   >
                     <button
                       type="button"
@@ -331,7 +335,7 @@ export function TransactionsTable({
               {isAdmin ? (
                 <th
                   scope="col"
-                  className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]"
+                  className="px-4 py-4 text-right text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]"
                 >
                   Actions
                 </th>
@@ -346,20 +350,20 @@ export function TransactionsTable({
               return (
                 <tr
                   key={transaction.id}
-                  className="border-t border-[var(--color-border)] text-sm"
+                  className="border-t border-[var(--color-border)] text-sm transition-colors hover:bg-[var(--color-primary-soft)]/35"
                 >
-                  <td className="px-4 py-3 text-[var(--color-text-muted)]">
+                  <td className={`${rowPaddingClass} text-[var(--color-text-muted)]`}>
                     {formatDate(transaction.date)}
                   </td>
-                  <td className="px-4 py-3 text-[var(--color-text-primary)]">
+                  <td className={`${rowPaddingClass} text-[var(--color-text-primary)]`}>
                     {transaction.description}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className={rowPaddingClass}>
                     <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
                       {transaction.category}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className={rowPaddingClass}>
                     <span
                       className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold uppercase ${getTypeBadgeClass(
                         transaction.type,
@@ -378,14 +382,14 @@ export function TransactionsTable({
                     </span>
                   </td>
                   <td
-                    className={`px-4 py-3 text-right font-semibold ${getAmountClass(
+                    className={`${rowPaddingClass} text-right font-semibold ${getAmountClass(
                       transaction.type,
                     )}`}
                   >
                     {formatINR(transaction.amount)}
                   </td>
                   {isAdmin ? (
-                    <td className="relative px-4 py-3 text-right">
+                    <td className={`relative ${rowPaddingClass} text-right`}>
                       <TransactionRowActions
                         transactionId={transaction.id}
                         isMenuOpen={isMenuOpen}

@@ -14,7 +14,7 @@ import {
   PAYMENT_METHODS,
   TRANSACTION_STATUSES,
 } from '@/constants'
-import { useFocusTrap } from '@/hooks'
+import { useFocusTrap, useUI } from '@/hooks'
 import type {
   Transaction,
   TransactionCategory,
@@ -129,6 +129,7 @@ export function TransactionModal({
     buildInitialState(mode, transaction),
   )
   const [errors, setErrors] = useState<TransactionFormErrors>({})
+  const { theme } = useUI()
 
   const modalPanelRef = useRef<HTMLDivElement | null>(null)
   const descriptionInputRef = useRef<HTMLInputElement | null>(null)
@@ -177,6 +178,9 @@ export function TransactionModal({
     [formState.type],
   )
 
+  const fieldClassName =
+    'theme-input mt-1 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-background)]/82 px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-blue-300'
+
   if (!isOpen) {
     return null
   }
@@ -223,7 +227,9 @@ export function TransactionModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain bg-slate-950/55 p-4 sm:p-6"
+      className={`fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain p-4 backdrop-blur-md sm:p-6 ${
+        theme === 'dark' ? 'bg-slate-950/55' : 'bg-slate-950/20'
+      }`}
       role="dialog"
       aria-modal="true"
       aria-labelledby="transaction-modal-title"
@@ -239,7 +245,7 @@ export function TransactionModal({
 
       <div
         ref={modalPanelRef}
-        className="relative z-10 flex w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card sm:max-h-[calc(100vh-4rem)] max-h-[calc(100vh-2rem)]"
+        className="relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/96 shadow-card backdrop-blur-xl sm:max-h-[calc(100vh-4rem)]"
       >
         <div className="flex items-start justify-between border-b border-[var(--color-border)] px-5 py-4">
           <div>
@@ -299,7 +305,7 @@ export function TransactionModal({
                     description: event.target.value,
                   }))
                 }
-                className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                className={fieldClassName}
                 placeholder="Transaction description"
                 aria-invalid={errors.description !== undefined}
                 aria-describedby={
@@ -334,7 +340,7 @@ export function TransactionModal({
                 type="number"
                 min="0"
                 step="0.01"
-                className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                className={fieldClassName}
                 placeholder="0.00"
                 aria-invalid={errors.amount !== undefined}
                 aria-describedby={
@@ -396,7 +402,7 @@ export function TransactionModal({
                     category: event.target.value as TransactionCategory,
                   }))
                 }
-                className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                className={`theme-select ${fieldClassName}`}
                 aria-invalid={errors.category !== undefined}
                 aria-describedby={
                   errors.category !== undefined ? categoryErrorId : undefined
@@ -428,7 +434,7 @@ export function TransactionModal({
                   }))
                 }
                 type="date"
-                className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                className={fieldClassName}
                 aria-invalid={errors.date !== undefined}
                 aria-describedby={
                   errors.date !== undefined ? dateErrorId : undefined
@@ -454,7 +460,7 @@ export function TransactionModal({
                       .value as TransactionDraft['paymentMethod'],
                   }))
                 }
-                className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                className={`theme-select ${fieldClassName}`}
               >
                 {PAYMENT_METHODS.map((paymentMethod) => (
                   <option key={paymentMethod} value={paymentMethod}>
@@ -476,7 +482,7 @@ export function TransactionModal({
                     status: event.target.value as TransactionStatus,
                   }))
                 }
-                className="mt-1 w-full rounded-lg border border-[var(--color-border)] px-3 py-2 text-sm outline-none transition focus:border-blue-300"
+                className={`theme-select ${fieldClassName}`}
               >
                 {TRANSACTION_STATUSES.map((status) => (
                   <option key={status} value={status}>

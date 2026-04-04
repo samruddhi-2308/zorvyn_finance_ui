@@ -38,6 +38,8 @@ interface UseTransactionsResult {
  * Provides source transactions plus filtered, paginated, and summarized views.
  */
 export function useTransactions(): UseTransactionsResult {
+  const FIXED_PAGE_SIZE = 5
+
   const {
     transactions,
     setTransactions,
@@ -56,7 +58,7 @@ export function useTransactions(): UseTransactionsResult {
     })),
   )
 
-  const { filterOptions, currentPage, pageSize } = useFilters()
+  const { filterOptions, currentPage } = useFilters()
   const setPage = useFilterStore((state) => state.setPage)
   const setPageSize = useFilterStore((state) => state.setPageSize)
 
@@ -73,7 +75,7 @@ export function useTransactions(): UseTransactionsResult {
   const totalResults = filteredTransactions.length
   const shouldPaginate = totalResults > 20
   const totalPages = shouldPaginate
-    ? Math.max(1, Math.ceil(totalResults / pageSize))
+    ? Math.max(1, Math.ceil(totalResults / FIXED_PAGE_SIZE))
     : 1
 
   useEffect(() => {
@@ -83,8 +85,8 @@ export function useTransactions(): UseTransactionsResult {
   }, [currentPage, setPage, totalPages])
 
   const effectivePage = Math.min(currentPage, totalPages)
-  const pageStartIndex = (effectivePage - 1) * pageSize
-  const pageEndIndexExclusive = pageStartIndex + pageSize
+  const pageStartIndex = (effectivePage - 1) * FIXED_PAGE_SIZE
+  const pageEndIndexExclusive = pageStartIndex + FIXED_PAGE_SIZE
 
   const paginatedTransactions = useMemo<readonly Transaction[]>(
     () =>
@@ -114,7 +116,7 @@ export function useTransactions(): UseTransactionsResult {
     totalPages,
     shouldPaginate,
     currentPage: effectivePage,
-    pageSize,
+    pageSize: FIXED_PAGE_SIZE,
     rangeStart,
     rangeEnd,
     setPage,

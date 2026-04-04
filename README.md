@@ -16,32 +16,33 @@ This project was built for the Finance Dashboard UI assignment brief. The app is
 
 ## 2. Live Demo
 
-- Live URL: Add Netlify URL here after deployment
+- Live URL: https://zorvynfinanceui.netlify.app/ 
 - Local URL: http://localhost:5173/
 
-Netlify deployment is pre-configured through netlify.toml.
 
 ## 3. Requirement Coverage (Assignment Crosswalk)
 
 ### 3.1 Dashboard Overview
 
-- Implemented summary cards: Total Balance, Total Income, Total Expenses, Savings Rate
-- Implemented time-based chart: monthly balance trend (income vs expense)
-- Implemented categorical chart: spending breakdown with chart-to-filter interaction
+- Implemented summary cards: Total Balance, Total Income, Total Expenses, and Savings Rate
+- Implemented a time-based visualization: Cumulative Balance Runway (daily series over two years) with an interactive brush window
+- Default runway brush period is set to 3 February through 15 September; users can move and resize the period as needed
+- Implemented a categorical visualization: Spending Breakdown Treemap with a companion category panel
+- Treemap and category panel support click-to-filter behavior for faster transaction exploration
 
 ### 3.2 Transactions Section
 
 - Transaction list includes date, amount, category, type, status
 - Implemented search and sorting
-- Implemented composable filters: type, category, date range
-- Implemented pagination when result count is high
+- Implemented composable filters: type, category, and quick temporal windows (Month-to-Date, Year-to-Date, Last 30 Days, Previous Quarter)
+- Implemented pagination when result count is high (5 rows per page)
 
 ### 3.3 Basic Role-Based UI
 
 - Role switcher in header (Viewer/Admin)
+- Default role is Admin on first load
 - Viewer: read-only access
 - Admin: add/edit/delete transactions through modal/actions/menu
-- Admin-only CSV export action in transactions toolbar
 
 ### 3.4 Insights Section
 
@@ -52,24 +53,30 @@ Netlify deployment is pre-configured through netlify.toml.
 
 ### 3.5 State Management
 
-- Zustand stores for transactions, filters, role, UI preferences
-- Derived state via feature hooks and memoized selectors
+- Zustand stores for transactions, filters, role, and UI preferences
+- Derived state is composed through feature hooks and memoized selectors
 
 ### 3.6 UI/UX Expectations
 
 - Responsive layout for mobile/tablet/desktop
-- Desktop sidebar supports icon-only collapse mode
-- Empty and loading states across sections
-- Accessibility enhancements (keyboard flow, ARIA labels, focus handling)
+- Clean, readable interface with a fixed top header and clear section hierarchy
+- Header includes brand logo plus a menu dropdown for Dashboard, Transactions, and Insights navigation
+- Empty and loading states across dashboard, transactions, and insights
+- Accessibility support: keyboard flow, ARIA labels, focus handling, and reduced-motion fallbacks
 
-## 4. Optional Enhancements Implemented
+## 4. Features Added Beyond Assignment Scope (Own Additions)
+
+These enhancements were added intentionally beyond the mandatory assignment brief:
 
 - Dark mode with persistence
-- Local storage persistence for key state slices
-- CSV export for filtered transactions
-- Animated transitions and skeleton loading patterns
+- Currency mode switcher (INR default, with USD/EUR/GBP options)
+- Local storage persistence for key state slices (transactions, filters, role, and UI preferences)
+- Admin-only report export actions in transactions toolbar (CSV and PDF)
+- Animated interactions (count-up metrics, hover transitions, section reveal-on-scroll)
 - Floating help panel and keyboard shortcuts
-- Quick actions strip for navigation and search acceleration
+- Quick actions strip for jump navigation and search focus
+- Dense daily balance runway model with detailed custom tooltips and brush-driven exploration
+- Enhanced Spending Breakdown experience with compact Treemap + category control panel
 
 ## 5. Tech Stack
 
@@ -77,6 +84,7 @@ Netlify deployment is pre-configured through netlify.toml.
 - TypeScript (strict)
 - Zustand
 - Recharts
+- Framer Motion
 - Tailwind CSS + CSS variables
 - ESLint + Prettier
 
@@ -139,21 +147,15 @@ npm run dev
 ## 10. Role Switching Guide
 
 - Use the Role dropdown in the top header
+- Use the Currency dropdown in the top header to switch between INR, USD, EUR, and GBP
 - Viewer role can browse dashboards, transactions, and insights
 - Viewer role cannot create/edit/delete records
 - Admin role can add transactions
 - Admin role can edit/delete existing transactions
-- Admin role can export filtered transactions as CSV
+- Admin role can export filtered dashboard state as CSV or PDF reports
 
-## 11. Branding Handoff
 
-Place company logo at:
-
-- public/branding/zorvyn-logo.png
-
-The shared branding component is already wired to this path and used across header/sidebar.
-
-## 12. Design and Engineering Decisions
+## 11. Design and Engineering Decisions
 
 - Zustand over Redux:
   - lower boilerplate for assignment scope
@@ -168,7 +170,7 @@ The shared branding component is already wired to this path and used across head
   - safer refactors
   - explicit contracts across feature modules
 
-## 13. Accessibility and UX Notes
+## 12. Accessibility and UX Notes
 
 - Semantic sectioning and skip link
 - ARIA labels on major controls and charts
@@ -176,28 +178,24 @@ The shared branding component is already wired to this path and used across head
 - ESC handling in overlays and menus
 - Reduced-motion support fallback
 
-## 14. Performance Notes
+## 13. Performance Notes
 
 - Lazy loading for heavier sections/charts
 - Memoized derived state in hooks
 - Skeleton loading patterns to improve perceived responsiveness
 
-## 15. Known Limitations
+## 14. Known Limitations
 
 - No backend integration (assignment intentionally frontend-only)
 - No authentication/authorization service (role simulation only)
 - E2E/browser integration tests are not yet included
 - No telemetry/error monitoring integration
 
-## 16. Assignment/PRD Delta Notes (Transparency)
+## 15. Assignment/PRD Delta Notes (Transparency)
 
-The core assignment requirements are met. The following are known deltas versus stricter PRD-style standards:
+The core assignment requirements are met.
 
-- React version is 19.x instead of PRD-suggested React 18
-- ESLint config is modern flat config, not Airbnb preset
-- README includes deployment placeholder until live URL is added
-
-## 17. Handoff Checklist
+## 16. Handoff Checklist
 
 - Update live demo link after Netlify deploy
 - Add final company logo at public branding path

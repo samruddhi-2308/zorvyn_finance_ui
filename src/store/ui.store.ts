@@ -1,13 +1,15 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import type { ThemeMode } from '@/types'
+import type { CurrencyMode, ThemeMode } from '@/types'
 
 interface UIStoreState {
   readonly theme: ThemeMode
+  readonly currency: CurrencyMode
   readonly isMobileSidebarOpen: boolean
   readonly isSidebarCollapsed: boolean
   readonly isHelpPanelOpen: boolean
   setTheme: (theme: ThemeMode) => void
+  setCurrency: (currency: CurrencyMode) => void
   toggleTheme: () => void
   openMobileSidebar: () => void
   closeMobileSidebar: () => void
@@ -21,12 +23,17 @@ export const useUIStore = create<UIStoreState>()(
   persist(
     (set) => ({
       theme: 'light',
+      currency: 'INR',
       isMobileSidebarOpen: false,
       isSidebarCollapsed: false,
       isHelpPanelOpen: false,
 
       setTheme(theme: ThemeMode): void {
         set({ theme })
+      },
+
+      setCurrency(currency: CurrencyMode): void {
+        set({ currency })
       },
 
       toggleTheme(): void {
@@ -65,9 +72,22 @@ export const useUIStore = create<UIStoreState>()(
     }),
     {
       name: 'zorvyn-ui',
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      migrate: (persistedState) => {
+        const state =
+          (persistedState as { readonly isSidebarCollapsed?: boolean } | undefined) ??
+          undefined
+
+        return {
+          theme: 'light' as ThemeMode,
+          currency: 'INR' as CurrencyMode,
+          isSidebarCollapsed: state?.isSidebarCollapsed ?? false,
+        }
+      },
       partialize: (state) => ({
         theme: state.theme,
+        currency: state.currency,
         isSidebarCollapsed: state.isSidebarCollapsed,
       }),
     },

@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
+import { useCurrency } from '@/hooks'
 import type { TopExpenseCategoryInsight } from '@/types'
-import { formatINR } from '@/utils'
 
 interface TopExpenseCategoriesCardProps {
   readonly categories: readonly TopExpenseCategoryInsight[]
@@ -44,6 +44,8 @@ export function TopExpenseCategoriesCard({
   ariaLabel,
   isLoading,
 }: TopExpenseCategoriesCardProps): ReactElement {
+  const { formatAmount } = useCurrency()
+
   if (isLoading) {
     return <TopExpenseCategoriesSkeleton />
   }
@@ -92,7 +94,7 @@ export function TopExpenseCategoriesCard({
 
                 <div className="text-right">
                   <p className="text-sm font-semibold text-[var(--color-text-primary)]">
-                    {formatINR(category.totalSpent)}
+                    {formatAmount(category.totalSpent)}
                   </p>
                   <p className="text-xs text-[var(--color-text-muted)]">
                     {category.percentageOfTotalExpenses.toFixed(1)}%

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useCurrency } from '@/hooks/useCurrency'
 import { useFilters } from '@/hooks/useFilters'
 import { useInsights } from '@/hooks/useInsights'
 import { useTransactions } from '@/hooks/useTransactions'
@@ -9,7 +10,10 @@ import type {
   SummaryCardModel,
   TrendDirection,
 } from '@/types'
-import { computeSpendingBreakdown, formatINR } from '@/utils'
+import {
+  computeDailyBalanceTrend,
+  computeSpendingBreakdown,
+} from '@/utils'
 
 interface DashboardOverviewState {
   readonly isLoading: boolean
@@ -55,6 +59,7 @@ function formatTrendPercent(value: number): string {
  */
 export function useDashboardOverview(): DashboardOverviewState {
   const [isLoading, setIsLoading] = useState(true)
+  const { formatAmount } = useCurrency()
 
   const { summary, transactions } = useTransactions()
   const insights = useInsights()
@@ -114,7 +119,8 @@ export function useDashboardOverview(): DashboardOverviewState {
     () => [
       {
         title: 'Total Balance',
-        value: formatINR(summary.totalBalance),
+        value: summary.totalBalance,
+        valueKind: 'currency',
         trendDirection: toTrendDirection(balanceChange),
         trendValue: formatTrendPercent(balanceChange),
         trendLabel: 'vs last month net',
@@ -122,7 +128,8 @@ export function useDashboardOverview(): DashboardOverviewState {
       },
       {
         title: 'Total Income',
-        value: formatINR(summary.totalIncome),
+        value: summary.totalIncome,
+        valueKind: 'currency',
         trendDirection: toTrendDirection(incomeChange),
         trendValue: formatTrendPercent(incomeChange),
         trendLabel: 'vs last month income',
@@ -130,7 +137,8 @@ export function useDashboardOverview(): DashboardOverviewState {
       },
       {
         title: 'Total Expenses',
-        value: formatINR(summary.totalExpenses),
+        value: summary.totalExpenses,
+        valueKind: 'currency',
         trendDirection: toTrendDirection(expenseChange),
         trendValue: formatTrendPercent(expenseChange),
         trendLabel: 'vs last month expenses',
@@ -138,7 +146,8 @@ export function useDashboardOverview(): DashboardOverviewState {
       },
       {
         title: 'Savings Rate',
-        value: `${(summary.savingsRate * 100).toFixed(1)}%`,
+        value: summary.savingsRate * 100,
+        valueKind: 'percent',
         trendDirection: toTrendDirection(savingsRateChange),
         trendValue: formatTrendPercent(savingsRateChange),
         trendLabel: 'vs last month savings',
@@ -158,14 +167,8 @@ export function useDashboardOverview(): DashboardOverviewState {
   )
 
   const balanceTrendData = useMemo<readonly BalanceTrendPoint[]>(
-    () =>
-      insights.monthlyComparison.map((entry) => ({
-        monthKey: entry.monthKey,
-        monthLabel: entry.monthLabel,
-        income: entry.income,
-        expenses: entry.expenses,
-      })),
-    [insights.monthlyComparison],
+    () => computeDailyBalanceTrend(transactions, 730),
+    [transactions],
   )
 
   const spendingBreakdownData = useMemo<readonly SpendingBreakdownPoint[]>(
@@ -189,18 +192,18 @@ export function useDashboardOverview(): DashboardOverviewState {
 
   const balanceTrendAriaLabel = useMemo<string>(() => {
     if (balanceTrendData.length === 0) {
-      return 'Balance trend chart unavailable because no monthly transaction data exists.'
+      return 'Cumulative balance runway chart unavailable because no daily transaction data exists.'
     }
 
-    const firstMonth = balanceTrendData[0]
-    const lastMonth = balanceTrendData[balanceTrendData.length - 1]
+    const firstDay = balanceTrendData[0]
+    const lastDay = balanceTrendData[balanceTrendData.length - 1]
 
-    if (!firstMonth || !lastMonth) {
-      return 'Balance trend chart unavailable because no monthly transaction data exists.'
+    if (!firstDay || !lastDay) {
+      return 'Cumulative balance runway chart unavailable because no daily transaction data exists.'
     }
 
-    return `Balance trend chart showing income and expenses from ${firstMonth.monthLabel} to ${lastMonth.monthLabel}. Latest month income is ${formatINR(lastMonth.income)} and expenses are ${formatINR(lastMonth.expenses)}.`
-  }, [balanceTrendData])
+    return `Cumulative balance runway chart from ${firstDay.fullLabel} to ${lastDay.fullLabel}. Latest total balance is ${formatAmount(lastDay.cumulativeBalance)} with latest day net movement of ${formatAmount(lastDay.net)}.`
+  }, [balanceTrendData, formatAmount])
 
   const spendingBreakdownAriaLabel = useMemo<string>(() => {
     if (spendingBreakdownData.length === 0) {
@@ -213,8 +216,8 @@ export function useDashboardOverview(): DashboardOverviewState {
       return 'Spending breakdown chart unavailable because there are no expense transactions.'
     }
 
-    return `Spending breakdown chart by expense category. Highest spend category is ${topCategory.category} at ${formatINR(topCategory.totalSpent)}, representing ${topCategory.percentage.toFixed(1)} percent of total expenses.`
-  }, [spendingBreakdownData])
+    return `Spending breakdown chart by expense category. Highest spend category is ${topCategory.category} at ${formatAmount(topCategory.totalSpent)}, representing ${topCategory.percentage.toFixed(1)} percent of total expenses.`
+  }, [spendingBreakdownData, formatAmount])
 
   const selectSpendingCategory = (category: ExpenseCategory): void => {
     if (selectedSpendingCategory === category) {

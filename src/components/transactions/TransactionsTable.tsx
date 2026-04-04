@@ -1,6 +1,13 @@
 import type { AriaAttributes, ReactElement } from 'react'
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  useReducedMotion,
+} from 'framer-motion'
+import { useCurrency } from '@/hooks'
 import type { Transaction, TransactionSortKey } from '@/types'
-import { formatDate, formatINR } from '@/utils'
+import { formatDate } from '@/utils'
 import { TransactionsEmptyState } from './TransactionsEmptyState'
 import type { TransactionRowAction, TransactionSortState } from './types'
 
@@ -130,7 +137,7 @@ function TransactionRowActions({
         <div
           id={`transaction-actions-menu-${transactionId}`}
           data-actions-menu="true"
-          className="absolute right-0 z-20 mt-10 w-32 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-1 shadow-card"
+          className="absolute right-0 z-20 mt-10 w-32 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]/92 p-1 shadow-card backdrop-blur-xl"
           role="menu"
           aria-label="Transaction actions"
         >
@@ -174,7 +181,25 @@ export function TransactionsTable({
   onRowAction,
   onResetFilters,
 }: TransactionsTableProps): ReactElement {
+  const { formatAmount } = useCurrency()
+  const shouldReduceMotion = useReducedMotion()
   const rowPaddingClass = density === 'comfortable' ? 'px-4 py-4' : 'px-4 py-2.5'
+  const mobileAnimateTarget = shouldReduceMotion
+    ? { opacity: 1, y: 0, scale: 1 }
+    : { opacity: 1, y: 0, scale: 1 }
+  const mobileExitTarget = shouldReduceMotion
+    ? { opacity: 1, y: 0, scale: 1 }
+    : { opacity: 0, y: -8, scale: 0.99 }
+  const mobileHoverTarget = shouldReduceMotion
+    ? { scale: 1, y: 0 }
+    : { scale: 1.02, y: -1 }
+  const desktopAnimateTarget = shouldReduceMotion
+    ? { opacity: 1, y: 0 }
+    : { opacity: 1, y: 0 }
+  const desktopExitTarget = shouldReduceMotion
+    ? { opacity: 1, y: 0 }
+    : { opacity: 0, y: -8 }
+  const desktopHoverTarget = shouldReduceMotion ? { scale: 1 } : { scale: 1.02 }
 
   if (transactions.length === 0) {
     return (
@@ -189,93 +214,105 @@ export function TransactionsTable({
 
   return (
     <>
-      <div className="space-y-4 lg:hidden" aria-label="Transactions list">
-        {transactions.map((transaction) => {
-          const isMenuOpen = openMenuTransactionId === transaction.id
+      <LayoutGroup id="transactions-mobile-layout">
+        <motion.div layout className="space-y-4 lg:hidden" aria-label="Transactions list">
+          <AnimatePresence initial={false} mode="popLayout">
+            {transactions.map((transaction) => {
+              const isMenuOpen = openMenuTransactionId === transaction.id
 
-          return (
-            <article
-              key={transaction.id}
-              className={`rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] ${density === 'comfortable' ? 'p-5' : 'p-4'}`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">
-                    {transaction.description}
-                  </p>
-                  <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">
-                    {formatDate(transaction.date)}
-                  </p>
-                </div>
+              return (
+                <motion.article
+                  key={transaction.id}
+                  layout
+                  initial={
+                    shouldReduceMotion ? false : { opacity: 0, y: 8, scale: 0.99 }
+                  }
+                  animate={mobileAnimateTarget}
+                  exit={mobileExitTarget}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  whileHover={mobileHoverTarget}
+                  className={`rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] ${density === 'comfortable' ? 'p-5' : 'p-4'}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--color-text-primary)]">
+                        {transaction.description}
+                      </p>
+                      <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">
+                        {formatDate(transaction.date)}
+                      </p>
+                    </div>
 
-                {isAdmin ? (
-                  <TransactionRowActions
-                    transactionId={transaction.id}
-                    isMenuOpen={isMenuOpen}
-                    onRowAction={onRowAction}
-                  />
-                ) : null}
-              </div>
+                    {isAdmin ? (
+                      <TransactionRowActions
+                        transactionId={transaction.id}
+                        isMenuOpen={isMenuOpen}
+                        onRowAction={onRowAction}
+                      />
+                    ) : null}
+                  </div>
 
-              <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-                    Category
-                  </dt>
-                  <dd className="mt-1">
-                    <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
-                      {transaction.category}
-                    </span>
-                  </dd>
-                </div>
+                  <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Category
+                      </dt>
+                      <dd className="mt-1">
+                        <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
+                          {transaction.category}
+                        </span>
+                      </dd>
+                    </div>
 
-                <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-                    Type
-                  </dt>
-                  <dd className="mt-1">
-                    <span
-                      className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold uppercase ${getTypeBadgeClass(
-                        transaction.type,
-                      )}`}
-                    >
-                      {transaction.type}
-                    </span>
-                  </dd>
-                </div>
+                    <div>
+                      <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Type
+                      </dt>
+                      <dd className="mt-1">
+                        <span
+                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold uppercase ${getTypeBadgeClass(
+                            transaction.type,
+                          )}`}
+                        >
+                          {transaction.type}
+                        </span>
+                      </dd>
+                    </div>
 
-                <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-                    Amount
-                  </dt>
-                  <dd
-                    className={`mt-1 text-sm font-semibold ${getAmountClass(
-                      transaction.type,
-                    )}`}
-                  >
-                    {formatINR(transaction.amount)}
-                  </dd>
-                </div>
+                    <div>
+                      <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Amount
+                      </dt>
+                      <dd
+                        className={`mt-1 text-sm font-semibold ${getAmountClass(
+                          transaction.type,
+                        )}`}
+                      >
+                        {formatAmount(transaction.amount)}
+                      </dd>
+                    </div>
 
-                <div>
-                  <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-                    Status
-                  </dt>
-                  <dd className="mt-1 inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                    <span
-                      className={`inline-flex h-2 w-2 rounded-full ${getStatusDotClass(
-                        transaction.status,
-                      )}`}
-                      aria-hidden="true"
-                    />
-                    {transaction.status}
-                  </dd>
-                </div>
-              </dl>
-            </article>
-          )
-        })}
-      </div>
+                    <div>
+                      <dt className="text-xs uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+                        Status
+                      </dt>
+                      <dd className="mt-1 inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                        <span
+                          className={`inline-flex h-2 w-2 rounded-full ${getStatusDotClass(
+                            transaction.status,
+                          )}`}
+                          aria-hidden="true"
+                        />
+                        {transaction.status}
+                      </dd>
+                    </div>
+                  </dl>
+                </motion.article>
+              )
+            })}
+          </AnimatePresence>
+        </motion.div>
+      </LayoutGroup>
 
       <div className="hidden overflow-x-auto rounded-xl border border-[var(--color-border)] lg:block">
         <table
@@ -343,64 +380,74 @@ export function TransactionsTable({
             </tr>
           </thead>
 
-          <tbody>
-            {transactions.map((transaction) => {
-              const isMenuOpen = openMenuTransactionId === transaction.id
+          <LayoutGroup id="transactions-table-layout">
+            <motion.tbody layout>
+              <AnimatePresence initial={false} mode="popLayout">
+                {transactions.map((transaction) => {
+                  const isMenuOpen = openMenuTransactionId === transaction.id
 
-              return (
-                <tr
-                  key={transaction.id}
-                  className="border-t border-[var(--color-border)] text-sm transition-colors hover:bg-[var(--color-primary-soft)]/35"
-                >
-                  <td className={`${rowPaddingClass} text-[var(--color-text-muted)]`}>
-                    {formatDate(transaction.date)}
-                  </td>
-                  <td className={`${rowPaddingClass} text-[var(--color-text-primary)]`}>
-                    {transaction.description}
-                  </td>
-                  <td className={rowPaddingClass}>
-                    <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
-                      {transaction.category}
-                    </span>
-                  </td>
-                  <td className={rowPaddingClass}>
-                    <span
-                      className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold uppercase ${getTypeBadgeClass(
-                        transaction.type,
-                      )}`}
+                  return (
+                    <motion.tr
+                      key={transaction.id}
+                      layout
+                      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+                      animate={desktopAnimateTarget}
+                      exit={desktopExitTarget}
+                      whileHover={desktopHoverTarget}
+                      transition={{ duration: 0.2, ease: 'easeOut' }}
+                      className="origin-center border-t border-[var(--color-border)] text-sm transition-colors hover:bg-[var(--color-primary-soft)]/35"
                     >
-                      {transaction.type}
-                    </span>
-                    <span className="ml-2 inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                      <span
-                        className={`inline-flex h-2 w-2 rounded-full ${getStatusDotClass(
-                          transaction.status,
+                      <td className={`${rowPaddingClass} text-[var(--color-text-muted)]`}>
+                        {formatDate(transaction.date)}
+                      </td>
+                      <td className={`${rowPaddingClass} text-[var(--color-text-primary)]`}>
+                        {transaction.description}
+                      </td>
+                      <td className={rowPaddingClass}>
+                        <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
+                          {transaction.category}
+                        </span>
+                      </td>
+                      <td className={rowPaddingClass}>
+                        <span
+                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold uppercase ${getTypeBadgeClass(
+                            transaction.type,
+                          )}`}
+                        >
+                          {transaction.type}
+                        </span>
+                        <span className="ml-2 inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                          <span
+                            className={`inline-flex h-2 w-2 rounded-full ${getStatusDotClass(
+                              transaction.status,
+                            )}`}
+                            aria-hidden="true"
+                          />
+                          {transaction.status}
+                        </span>
+                      </td>
+                      <td
+                        className={`${rowPaddingClass} text-right font-semibold ${getAmountClass(
+                          transaction.type,
                         )}`}
-                        aria-hidden="true"
-                      />
-                      {transaction.status}
-                    </span>
-                  </td>
-                  <td
-                    className={`${rowPaddingClass} text-right font-semibold ${getAmountClass(
-                      transaction.type,
-                    )}`}
-                  >
-                    {formatINR(transaction.amount)}
-                  </td>
-                  {isAdmin ? (
-                    <td className={`relative ${rowPaddingClass} text-right`}>
-                      <TransactionRowActions
-                        transactionId={transaction.id}
-                        isMenuOpen={isMenuOpen}
-                        onRowAction={onRowAction}
-                      />
-                    </td>
-                  ) : null}
-                </tr>
-              )
-            })}
-          </tbody>
+                      >
+                        {formatAmount(transaction.amount)}
+                      </td>
+                      {isAdmin ? (
+                        <td className={`relative ${rowPaddingClass} text-right`}>
+                          <TransactionRowActions
+                            transactionId={transaction.id}
+                            isMenuOpen={isMenuOpen}
+                            onRowAction={onRowAction}
+                          />
+                        </td>
+                      ) : null}
+                    </motion.tr>
+                  )
+                })}
+              </AnimatePresence>
+            </motion.tbody>
+          </LayoutGroup>
         </table>
       </div>
     </>

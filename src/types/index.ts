@@ -1,5 +1,8 @@
 export type {
   BalanceTrendPoint,
+  CashFlowSankeyData,
+  CashFlowSankeyLink,
+  CashFlowSankeyNode,
   SpendingBreakdownPoint,
   SummaryCardModel,
   TrendDirection,
@@ -27,4 +30,4 @@ export type {
 } from './finance'
 export type { NavigationItem, NavigationItemId } from './navigation'
 export type { UserRole } from './role'
-export type { ThemeMode } from './ui'
+export type { CurrencyMode, ThemeMode } from './ui'

@@ -56,7 +56,7 @@ export function HelpPanel({
         id="help-panel"
         ref={panelRef}
         aria-labelledby="help-panel-title"
-        className={`fixed bottom-20 right-4 z-50 w-[min(30rem,calc(100vw-2rem))] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-card transition-all duration-300 ${
+        className={`fixed bottom-20 right-4 z-50 w-[min(30rem,calc(100vw-2rem))] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/95 p-6 shadow-card backdrop-blur-xl transition-all duration-300 ${
           isOpen
             ? 'help-panel-enter translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-4 opacity-0'
@@ -131,7 +131,7 @@ export function HelpPanel({
                 <strong className="font-semibold">Esc</strong> closes open menus
                 and dialogs.
               </li>
-              <li>Use the sidebar links to jump to each dashboard section.</li>
+              <li>Use the floating command pill to jump to each dashboard section.</li>
             </ul>
           </section>
 

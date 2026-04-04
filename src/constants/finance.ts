@@ -6,6 +6,7 @@ import type {
   TransactionStatus,
   TransactionType,
 } from '@/types/finance'
+import type { CurrencyMode } from '@/types/ui'
 
 export const TRANSACTION_TYPES = [
   'income',
@@ -45,3 +46,10 @@ export const TRANSACTION_CATEGORIES = [
   ...INCOME_CATEGORIES,
   ...EXPENSE_CATEGORIES,
 ] as const satisfies readonly TransactionCategory[]
+
+export const CURRENCY_MODES = [
+  { value: 'INR', label: 'INR (Rs)' },
+  { value: 'USD', label: 'USD ($)' },
+  { value: 'EUR', label: 'EUR (Euro)' },
+  { value: 'GBP', label: 'GBP (Pound)' },
+] as const satisfies readonly { readonly value: CurrencyMode; readonly label: string }[]

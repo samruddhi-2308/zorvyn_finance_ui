@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
+import { useCurrency } from '@/hooks'
 import type { HighestSpendingCategoryInsight } from '@/types'
-import { formatINR } from '@/utils'
 
 interface HighestSpendingCategoryCardProps {
   readonly insight: HighestSpendingCategoryInsight
@@ -41,6 +41,8 @@ export function HighestSpendingCategoryCard({
   insight,
   isLoading,
 }: HighestSpendingCategoryCardProps): ReactElement {
+  const { formatAmount } = useCurrency()
+
   if (isLoading) {
     return <HighestSpendingCategorySkeleton />
   }
@@ -57,7 +59,7 @@ export function HighestSpendingCategoryCard({
   return (
     <article
       className="surface-card p-5"
-      aria-label={`Highest spending category is ${insight.category} at ${formatINR(insight.totalSpent)}`}
+      aria-label={`Highest spending category is ${insight.category} at ${formatAmount(insight.totalSpent)}`}
     >
       <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">
         Highest Spending Category
@@ -70,7 +72,7 @@ export function HighestSpendingCategoryCard({
         {insight.category}
       </p>
       <p className="mt-1 text-3xl font-bold tracking-tight text-[var(--color-text-primary)]">
-        {formatINR(insight.totalSpent)}
+        {formatAmount(insight.totalSpent)}
       </p>
       <p className="mt-1 text-sm text-[var(--color-text-muted)]">
         {insight.percentageOfTotalExpenses.toFixed(1)}% of all expense volume

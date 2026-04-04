@@ -11,6 +11,13 @@ import {
   INCOME_CATEGORIES,
   TRANSACTION_CATEGORIES,
 } from '@/constants'
+import {
+  formatDate,
+  getDateRangeForPreset,
+  resolveTemporalPreset,
+  TEMPORAL_PRESET_OPTIONS,
+  type TemporalPreset,
+} from '@/utils'
 import type {
   DateRangeFilter,
   TransactionCategory,
@@ -54,6 +61,40 @@ function buildCategorySummary(
   }
 
   return `${categories.length} categories selected`
+}
+
+function describeActiveDateRange(dateRange: DateRangeFilter): string {
+  if (dateRange.startDate === undefined && dateRange.endDate === undefined) {
+    return 'All dates included'
+  }
+
+  try {
+    if (dateRange.startDate !== undefined && dateRange.endDate !== undefined) {
+      return `${formatDate(dateRange.startDate)} to ${formatDate(dateRange.endDate)}`
+    }
+
+    if (dateRange.startDate !== undefined) {
+      return `From ${formatDate(dateRange.startDate)}`
+    }
+
+    if (dateRange.endDate !== undefined) {
+      return `Until ${formatDate(dateRange.endDate)}`
+    }
+  } catch {
+    if (dateRange.startDate !== undefined && dateRange.endDate !== undefined) {
+      return `${dateRange.startDate} to ${dateRange.endDate}`
+    }
+
+    if (dateRange.startDate !== undefined) {
+      return `From ${dateRange.startDate}`
+    }
+
+    if (dateRange.endDate !== undefined) {
+      return `Until ${dateRange.endDate}`
+    }
+  }
+
+  return 'All dates included'
 }
 
 /**
@@ -133,6 +174,16 @@ export function TransactionsFilters({
     [activeCategories],
   )
 
+  const selectedTemporalPreset = useMemo(
+    () => resolveTemporalPreset(dateRange),
+    [dateRange],
+  )
+
+  const activeDateRangeLabel = useMemo(
+    () => describeActiveDateRange(dateRange),
+    [dateRange],
+  )
+
   const visibleCategories = useMemo<readonly TransactionCategory[]>(() => {
     if (activeTypes.length !== 1) {
       return TRANSACTION_CATEGORIES
@@ -165,22 +216,8 @@ export function TransactionsFilters({
     onCategoryFilterChange([...activeCategories, category])
   }
 
-  const onStartDateChange = (value: string): void => {
-    onDateRangeChange({
-      ...(value.length > 0 ? { startDate: value } : {}),
-      ...(dateRange.endDate !== undefined
-        ? { endDate: dateRange.endDate }
-        : {}),
-    })
-  }
-
-  const onEndDateChange = (value: string): void => {
-    onDateRangeChange({
-      ...(dateRange.startDate !== undefined
-        ? { startDate: dateRange.startDate }
-        : {}),
-      ...(value.length > 0 ? { endDate: value } : {}),
-    })
+  const onTemporalPresetChange = (preset: TemporalPreset): void => {
+    onDateRangeChange(getDateRangeForPreset(preset))
   }
 
   return (
@@ -274,7 +311,7 @@ export function TransactionsFilters({
           {isCategoryPickerOpen ? (
             <div
               id={categoryListboxId}
-              className="absolute z-30 mt-2 max-h-56 w-full overflow-y-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-card"
+              className="absolute z-30 mt-2 max-h-56 w-full overflow-y-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]/92 p-2 shadow-card backdrop-blur-xl"
               role="listbox"
               aria-label="Category multi-select options"
             >
@@ -309,32 +346,43 @@ export function TransactionsFilters({
         </button>
       </div>
 
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            Start Date
-          </span>
-          <input
-            type="date"
-            value={dateRange.startDate ?? ''}
-            onChange={(event) => onStartDateChange(event.target.value)}
-            className="mt-1 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-blue-300"
-            aria-label="Filter start date"
-          />
-        </label>
+      <div className="mt-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
+            Time Window
+          </p>
+          <p className="text-xs text-[var(--color-text-muted)]">{activeDateRangeLabel}</p>
+        </div>
 
-        <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            End Date
-          </span>
-          <input
-            type="date"
-            value={dateRange.endDate ?? ''}
-            onChange={(event) => onEndDateChange(event.target.value)}
-            className="mt-1 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm text-[var(--color-text-primary)] outline-none transition focus:border-blue-300"
-            aria-label="Filter end date"
-          />
-        </label>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {TEMPORAL_PRESET_OPTIONS.map((presetOption) => {
+            const isSelected = selectedTemporalPreset === presetOption.id
+
+            return (
+              <button
+                key={presetOption.id}
+                type="button"
+                onClick={() => onTemporalPresetChange(presetOption.id)}
+                title={presetOption.description}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold tracking-[0.04em] transition ${
+                  isSelected
+                    ? 'border-blue-600 bg-blue-600 text-white'
+                    : 'border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-[var(--color-primary-soft)]'
+                }`}
+                aria-pressed={isSelected}
+              >
+                {presetOption.label}
+              </button>
+            )
+          })}
+        </div>
+
+        {selectedTemporalPreset === null ? (
+          <p className="mt-3 text-xs text-amber-700">
+            A custom date range from an earlier session is active. Select a
+            quick filter or use Reset.
+          </p>
+        ) : null}
       </div>
     </section>
   )

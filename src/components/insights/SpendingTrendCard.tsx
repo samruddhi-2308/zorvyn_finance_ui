@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
+import { useCurrency } from '@/hooks'
 import type { SpendingTrendInsight } from '@/types'
-import { formatINR, formatMonthKey } from '@/utils'
+import { formatMonthKey } from '@/utils'
 
 interface SpendingTrendCardProps {
   readonly trend: SpendingTrendInsight
@@ -24,9 +25,12 @@ function formatSignedPercent(value: number): string {
   return `${sign}${Math.abs(value).toFixed(1)}%`
 }
 
-function formatSignedCurrency(value: number): string {
+function formatSignedCurrency(
+  value: number,
+  formatAmount: (amount: number) => string,
+): string {
   const sign = value > 0 ? '+' : value < 0 ? '-' : ''
-  return `${sign}${formatINR(Math.abs(value))}`
+  return `${sign}${formatAmount(Math.abs(value))}`
 }
 
 function resolveTrendClasses(direction: SpendingTrendInsight['direction']): {
@@ -78,6 +82,8 @@ export function SpendingTrendCard({
   trend,
   isLoading,
 }: SpendingTrendCardProps): ReactElement {
+  const { formatAmount } = useCurrency()
+
   if (isLoading) {
     return <SpendingTrendSkeleton />
   }
@@ -118,7 +124,8 @@ export function SpendingTrendCard({
         {formatSignedPercent(trend.percentageChange)}
       </p>
       <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-        Absolute change: {formatSignedCurrency(trend.absoluteChange)}
+        Absolute change:{' '}
+        {formatSignedCurrency(trend.absoluteChange, formatAmount)}
       </p>
 
       <p className="mt-4 rounded-xl bg-[var(--color-background)] p-3 text-sm text-[var(--color-text-primary)]">

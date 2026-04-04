@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState, type ReactElement } from 'react'
-import { useFilters, usePermission, useTransactions } from '@/hooks'
+import { useCurrency, useFilters, usePermission, useTransactions } from '@/hooks'
 import type { TransactionDraft, TransactionSortKey } from '@/types'
-import { exportTransactionsToCsv } from '@/utils'
+import {
+  computeSummary,
+  exportDashboardReport,
+  logger,
+  type ReportFormat,
+} from '@/utils'
 import { TransactionModal } from './TransactionModal'
 import { TransactionsFilters } from './TransactionsFilters'
 import { TransactionsPagination } from './TransactionsPagination'
@@ -50,6 +55,7 @@ function TransactionsLoadingState(): ReactElement {
  */
 export function TransactionsSection(): ReactElement {
   const canCreateTransactions = usePermission('create')
+  const { currency } = useCurrency()
 
   const {
     searchQuery,
@@ -91,6 +97,11 @@ export function TransactionsSection(): ReactElement {
   const [isSectionLoading, setIsSectionLoading] = useState(true)
   const [modalState, setModalState] =
     useState<TransactionModalState>(initialModalState)
+  const [activeReportFormat, setActiveReportFormat] =
+    useState<ReportFormat | null>(null)
+  const [reportExportError, setReportExportError] = useState<string | null>(
+    null,
+  )
 
   const activeFilterState = useMemo<boolean>(
     () =>
@@ -101,6 +112,11 @@ export function TransactionsSection(): ReactElement {
   const sortedState = useMemo(
     () => ({ sortBy, sortDirection }),
     [sortBy, sortDirection],
+  )
+
+  const reportSummary = useMemo(
+    () => computeSummary(filteredTransactions),
+    [filteredTransactions],
   )
 
   useEffect(() => {
@@ -238,8 +254,54 @@ export function TransactionsSection(): ReactElement {
     }
   }
 
-  const exportCurrentResults = (): void => {
-    exportTransactionsToCsv(filteredTransactions, 'zorvyn-transactions')
+  const exportCurrentResults = async (format: ReportFormat): Promise<void> => {
+    if (filteredTransactions.length === 0 || activeReportFormat !== null) {
+      return
+    }
+
+    setReportExportError(null)
+    setActiveReportFormat(format)
+
+    try {
+      const dashboardSectionElement = document.getElementById('dashboard-overview')
+
+      await exportDashboardReport(
+        {
+          transactions: filteredTransactions,
+          summary: reportSummary,
+          filters: {
+            searchQuery,
+            activeTypes,
+            activeCategories,
+            dateRange,
+          },
+          currency,
+          dashboardSectionElement:
+            dashboardSectionElement instanceof HTMLElement
+              ? dashboardSectionElement
+              : null,
+        },
+        format,
+      )
+    } catch (error) {
+      setReportExportError(
+        'Could not generate this report. Please try again in a moment.',
+      )
+      logger.error('Dashboard report export failed', {
+        format,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      setActiveReportFormat(null)
+    }
+  }
+
+  const onExportCsvClick = (): void => {
+    void exportCurrentResults('csv')
+  }
+
+  const onExportPdfClick = (): void => {
+    void exportCurrentResults('pdf')
   }
 
   return (
@@ -253,7 +315,7 @@ export function TransactionsSection(): ReactElement {
         <div>
           <h3
             id="transactions-overview-title"
-            className="text-lg font-semibold"
+            className="section-heading-dark-gradient inline-block text-lg font-semibold"
           >
             Transactions
           </h3>
@@ -286,15 +348,54 @@ export function TransactionsSection(): ReactElement {
           </div>
 
           {canCreateTransactions ? (
-            <button
-              type="button"
-              onClick={exportCurrentResults}
-              disabled={filteredTransactions.length === 0}
-              className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-primary-soft)] disabled:cursor-not-allowed disabled:opacity-60"
-              aria-label="Export currently filtered transactions as CSV"
-            >
-              Export CSV
-            </button>
+            <div className="flex flex-col items-start gap-1">
+              <div className="inline-flex overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
+                <button
+                  type="button"
+                  onClick={onExportCsvClick}
+                  disabled={
+                    filteredTransactions.length === 0 ||
+                    activeReportFormat !== null
+                  }
+                  className="border-r border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-primary-soft)] disabled:cursor-not-allowed disabled:opacity-60"
+                  aria-label="Export currently filtered dashboard report as CSV"
+                >
+                  {activeReportFormat === 'csv'
+                    ? 'Generating CSV...'
+                    : 'CSV Report'}
+                </button>
+                <button
+                  type="button"
+                  onClick={onExportPdfClick}
+                  disabled={
+                    filteredTransactions.length === 0 ||
+                    activeReportFormat !== null
+                  }
+                  className="px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)] transition hover:bg-[var(--color-primary-soft)] disabled:cursor-not-allowed disabled:opacity-60"
+                  aria-label="Export currently filtered dashboard report as PDF"
+                >
+                  {activeReportFormat === 'pdf'
+                    ? 'Generating PDF...'
+                    : 'PDF Report'}
+                </button>
+              </div>
+
+              {activeReportFormat !== null ? (
+                <p
+                  className="text-xs text-[var(--color-text-muted)]"
+                  aria-live="polite"
+                >
+                  Preparing {activeReportFormat.toUpperCase()} report in the
+                  background...
+                </p>
+              ) : null}
+
+              {reportExportError !== null ? (
+                <p className="text-xs text-red-600" role="alert">
+                  {reportExportError}
+                </p>
+              ) : null}
+            </div>
           ) : null}
 
           {canCreateTransactions ? (

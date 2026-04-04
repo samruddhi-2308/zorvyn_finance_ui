@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
+import { useCurrency } from '@/hooks'
 import type { MonthlyComparisonEntry } from '@/types'
-import { formatINR } from '@/utils'
 
 interface MonthlyComparisonPanelProps {
   readonly entries: readonly MonthlyComparisonEntry[]
@@ -12,14 +12,14 @@ interface MonthlyComparisonPanelProps {
 
 function getNetTextColor(net: number): string {
   if (net > 0) {
-    return 'text-emerald-700'
+    return 'text-emerald-600'
   }
 
   if (net < 0) {
-    return 'text-rose-700'
+    return 'text-rose-500'
   }
 
-  return 'text-slate-700'
+  return 'text-[var(--color-text-muted)]'
 }
 
 function MonthlyComparisonSkeleton(): ReactElement {
@@ -61,6 +61,8 @@ export function MonthlyComparisonPanel({
   ariaLabel,
   isLoading,
 }: MonthlyComparisonPanelProps): ReactElement {
+  const { formatAmount } = useCurrency()
+
   if (isLoading) {
     return <MonthlyComparisonSkeleton />
   }
@@ -83,12 +85,12 @@ export function MonthlyComparisonPanel({
 
         <div className="flex flex-wrap gap-2 text-xs font-semibold">
           {bestMonth !== null ? (
-            <span className="rounded-full bg-emerald-100 px-2 py-1 text-emerald-800">
+            <span className="tone-positive-chip rounded-full px-2 py-1">
               Best net: {bestMonth.monthLabel}
             </span>
           ) : null}
           {worstMonth !== null ? (
-            <span className="rounded-full bg-rose-100 px-2 py-1 text-rose-800">
+            <span className="tone-negative-chip rounded-full px-2 py-1">
               Lowest net: {worstMonth.monthLabel}
             </span>
           ) : null}
@@ -146,9 +148,9 @@ export function MonthlyComparisonPanel({
               const isBest = bestMonth?.monthKey === entry.monthKey
               const isWorst = worstMonth?.monthKey === entry.monthKey
               const rowToneClass = isBest
-                ? 'bg-emerald-50/70'
+                ? 'tone-positive-row'
                 : isWorst
-                  ? 'bg-rose-50/70'
+                  ? 'tone-negative-row'
                   : ''
 
               const tagLabel =
@@ -169,15 +171,15 @@ export function MonthlyComparisonPanel({
                     {entry.monthLabel}
                   </th>
                   <td className="border-b border-[var(--color-border)] px-3 py-2 text-right text-[var(--color-text-primary)]">
-                    {formatINR(entry.income)}
+                    {formatAmount(entry.income)}
                   </td>
                   <td className="border-b border-[var(--color-border)] px-3 py-2 text-right text-[var(--color-text-primary)]">
-                    {formatINR(entry.expenses)}
+                    {formatAmount(entry.expenses)}
                   </td>
                   <td
                     className={`border-b border-[var(--color-border)] px-3 py-2 text-right font-semibold ${getNetTextColor(entry.net)}`}
                   >
-                    {formatINR(entry.net)}
+                    {formatAmount(entry.net)}
                   </td>
                   <td className="border-b border-[var(--color-border)] px-3 py-2 text-right text-xs font-semibold text-[var(--color-text-muted)]">
                     {tagLabel}

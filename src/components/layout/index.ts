@@ -1,7 +1,7 @@
 export { AppShell } from './AppShell'
 export { BrandLogo } from './BrandLogo'
 export { DashboardOverviewSection } from './DashboardOverviewSection'
+export { FloatingCommandPill } from './Sidebar'
 export { Header } from './Header'
 export { HelpPanel } from './HelpPanel'
 export { InsightsSection } from './InsightsSection'
-export { Sidebar } from './Sidebar'

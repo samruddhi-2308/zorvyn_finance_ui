@@ -29,12 +29,12 @@ export function InsightsSection(): ReactElement {
     <section
       id="insights-overview"
       aria-labelledby="insights-overview-title"
-      className="section-reveal space-y-7"
+      className="section-reveal space-y-5"
     >
       <div>
         <h2
           id="insights-overview-title"
-          className="text-2xl font-bold tracking-tight"
+          className="section-heading-dark-gradient inline-block text-2xl font-bold tracking-tight"
         >
           Insights
         </h2>
@@ -47,16 +47,15 @@ export function InsightsSection(): ReactElement {
       {!isLoading && !hasAnyInsightData ? (
         <InsightsEmptyState />
       ) : (
-        <div className="grid gap-8 xl:grid-cols-12">
-          <div className="space-y-8 xl:col-span-4">
+        <div className="grid auto-rows-[minmax(8rem,auto)] gap-4 xl:grid-cols-12">
+          <div className="xl:col-span-4">
             <HighestSpendingCategoryCard
               insight={highestSpendingCategory}
               isLoading={isLoading}
             />
-            <SpendingTrendCard trend={spendingTrend} isLoading={isLoading} />
           </div>
 
-          <div className="space-y-8 xl:col-span-8">
+          <div className="xl:col-span-8">
             <MonthlyComparisonPanel
               entries={monthlyComparison}
               bestMonth={bestMonth}
@@ -64,11 +63,18 @@ export function InsightsSection(): ReactElement {
               ariaLabel={monthlyComparisonAriaLabel}
               isLoading={isLoading}
             />
+          </div>
+
+          <div className="xl:col-span-7">
             <TopExpenseCategoriesCard
               categories={topExpenseCategories}
               ariaLabel={topExpenseCategoriesAriaLabel}
               isLoading={isLoading}
             />
+          </div>
+
+          <div className="xl:col-span-5">
+            <SpendingTrendCard trend={spendingTrend} isLoading={isLoading} />
           </div>
         </div>
       )}

@@ -12,19 +12,23 @@ interface RoleStoreState {
 export const useRoleStore = create<RoleStoreState>()(
   persist(
     (set) => ({
-      currentRole: ROLES.VIEWER,
+      currentRole: ROLES.ADMIN,
 
       setRole(role: UserRole): void {
         set({ currentRole: role })
       },
 
       resetRole(): void {
-        set({ currentRole: ROLES.VIEWER })
+        set({ currentRole: ROLES.ADMIN })
       },
     }),
     {
       name: 'zorvyn-role',
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      migrate: () => ({
+        currentRole: ROLES.ADMIN,
+      }),
       partialize: (state) => ({
         currentRole: state.currentRole,
       }),

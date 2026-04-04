@@ -1,22 +1,77 @@
-import { useEffect, useRef, useState, type ReactElement } from 'react'
+import { useEffect, useState, type ReactElement } from 'react'
 import { NAVIGATION_ITEMS } from '@/constants/navigation'
-import { useFocusTrap } from '@/hooks'
-import { BrandLogo } from './BrandLogo'
 
-interface SidebarProps {
-  readonly isOpen: boolean
-  readonly isCollapsed: boolean
-  readonly onCloseMobileNav: () => void
-  readonly onToggleCollapsed: () => void
+const NAV_ICON_PATHS = {
+  dashboard: 'M3.5 9.5L10 4L16.5 9.5V16.5H12V12.1H8V16.5H3.5V9.5Z',
+  transactions: 'M4 5.5H16V8.5H4V5.5ZM4 10.5H11V13.5H4V10.5ZM12.5 11.9L14.1 13.5L16.8 10.8',
+  insights: 'M4 15.5V12.5M8 15.5V9.5M12 15.5V6.5M16 15.5V11.5',
+} as const
+
+type NavigationIconId = keyof typeof NAV_ICON_PATHS
+
+function NavigationGlyph({
+  id,
+  className,
+}: {
+  readonly id: string
+  readonly className?: string
+}): ReactElement {
+  const path =
+    id in NAV_ICON_PATHS
+      ? NAV_ICON_PATHS[id as NavigationIconId]
+      : NAV_ICON_PATHS.dashboard
+
+  return (
+    <svg viewBox="0 0 20 20" fill="none" className={className} aria-hidden="true">
+      <path
+        d={path}
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
 }
 
-export function Sidebar({
-  isOpen,
-  isCollapsed,
-  onCloseMobileNav,
-  onToggleCollapsed,
-}: SidebarProps): ReactElement {
-  const sidebarRef = useRef<HTMLElement | null>(null)
+function CommandPillLink({
+  href,
+  label,
+  id,
+  isActive,
+  onNavigate,
+  isMobile,
+}: {
+  readonly href: string
+  readonly label: string
+  readonly id: string
+  readonly isActive: boolean
+  readonly onNavigate: (href: string) => void
+  readonly isMobile: boolean
+}): ReactElement {
+  return (
+    <a
+      href={href}
+      aria-current={isActive ? 'page' : undefined}
+      onClick={() => onNavigate(href)}
+      className={`group flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none ${
+        isMobile ? 'min-w-0 flex-1 justify-center px-2.5 py-2.5 text-xs' : ''
+      } ${
+        isActive
+          ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)] shadow-[inset_0_0_0_1px_rgba(37,99,235,0.2)]'
+          : 'text-[var(--color-text-muted)] hover:bg-white/45 hover:text-[var(--color-text-primary)] dark:hover:bg-white/10'
+      }`}
+    >
+      <NavigationGlyph
+        id={id}
+        className={isMobile ? 'h-4 w-4 flex-shrink-0' : 'h-4 w-4'}
+      />
+      <span className={isMobile ? 'truncate' : ''}>{label}</span>
+    </a>
+  )
+}
+
+export function FloatingCommandPill(): ReactElement {
   const [activeHref, setActiveHref] = useState<string>(() => {
     if (typeof window === 'undefined') {
       return '#dashboard-overview'
@@ -24,8 +79,6 @@ export function Sidebar({
 
     return window.location.hash || '#dashboard-overview'
   })
-
-  useFocusTrap(sidebarRef, isOpen, onCloseMobileNav)
 
   useEffect(() => {
     const onHashChange = (): void => {
@@ -40,170 +93,108 @@ export function Sidebar({
   }, [])
 
   useEffect(() => {
-    if (!isOpen) {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
       return
     }
 
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const sectionTargets = NAVIGATION_ITEMS.map((item) => {
+      const section = document.querySelector(item.href)
+      if (!(section instanceof HTMLElement)) {
+        return null
+      }
+
+      return {
+        href: item.href,
+        section,
+      }
+    }).filter((entry): entry is { href: string; section: HTMLElement } => entry !== null)
+
+    if (sectionTargets.length === 0) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+
+        const currentSection = visibleEntries.at(0)
+        if (!currentSection) {
+          return
+        }
+
+        const matchedSection = sectionTargets.find(
+          (entry) => entry.section === currentSection.target,
+        )
+
+        if (matchedSection) {
+          setActiveHref(matchedSection.href)
+        }
+      },
+      {
+        rootMargin: '-28% 0px -58% 0px',
+        threshold: [0.2, 0.35, 0.5, 0.7],
+      },
+    )
+
+    sectionTargets.forEach((entry) => {
+      observer.observe(entry.section)
+    })
 
     return () => {
-      document.body.style.overflow = previousOverflow
+      observer.disconnect()
     }
-  }, [isOpen])
+  }, [])
 
   const onNavigate = (href: string): void => {
     setActiveHref(href)
-    onCloseMobileNav()
   }
 
   return (
     <>
-      <div
-        className={`fixed inset-0 z-30 bg-slate-950/45 transition-opacity duration-300 lg:hidden ${
-          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
-        }`}
-        aria-hidden="true"
-        onClick={onCloseMobileNav}
-      />
-
-      <aside
-        id="primary-sidebar"
-        ref={sidebarRef}
-        aria-label="Primary"
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] p-5 transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
-          isCollapsed ? 'lg:w-20 lg:px-3' : 'lg:w-72'
-        } ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+      <nav
+        aria-label="Command navigation"
+        className="pointer-events-none fixed left-4 top-4 z-[56] hidden sm:block"
       >
-        <div className="mb-3 hidden lg:flex lg:justify-end">
-          <button
-            type="button"
-            onClick={onToggleCollapsed}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)]"
-            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            aria-pressed={isCollapsed}
-          >
-            <svg
-              viewBox="0 0 20 20"
-              fill="none"
-              className={`h-4 w-4 transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
-              aria-hidden="true"
-            >
-              <path
-                d="M8 5L13 10L8 15"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+        <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-white/35 bg-[var(--glass-surface)]/70 p-1.5 shadow-[0_24px_46px_-26px_rgba(2,6,23,0.85)] ring-1 ring-white/20 backdrop-blur-2xl">
+          {NAVIGATION_ITEMS.map((item) => (
+            <CommandPillLink
+              key={item.id}
+              href={item.href}
+              label={item.label}
+              id={item.id}
+              isActive={activeHref === item.href}
+              onNavigate={onNavigate}
+              isMobile={false}
+            />
+          ))}
         </div>
+      </nav>
 
-        <div className="mb-2 flex items-center justify-between gap-2 lg:hidden">
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            Navigation
-          </p>
-          <button
-            type="button"
-            onClick={onCloseMobileNav}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] text-[var(--color-text-muted)] transition hover:bg-[var(--color-primary-soft)]"
-            aria-label="Close navigation menu"
-          >
-            <svg
-              viewBox="0 0 20 20"
-              fill="none"
-              className="h-4 w-4"
-              aria-hidden="true"
-            >
-              <path
-                d="M5 5L15 15M15 5L5 15"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="mb-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] p-3">
-          {isCollapsed ? (
-            <div className="hidden h-10 items-center justify-center rounded-lg bg-[var(--color-primary-soft)] text-sm font-bold text-[var(--color-primary)] lg:flex">
-              Z
-            </div>
-          ) : null}
-          <div className={isCollapsed ? 'lg:hidden' : ''}>
-            <BrandLogo className="w-full" />
-          </div>
-        </div>
-
+      <nav
+        aria-label="Mobile command navigation"
+        className="pointer-events-none fixed inset-x-0 bottom-3 z-[56] px-3 sm:hidden"
+      >
         <div
-          className={`flex h-12 items-center rounded-lg border border-[var(--color-border)] bg-[var(--color-primary-soft)] px-4 ${
-            isCollapsed ? 'lg:justify-center lg:px-0' : ''
-          }`}
+          className="pointer-events-auto mx-auto flex w-full max-w-md items-center justify-between gap-1 rounded-[1.2rem] border border-white/35 bg-[var(--glass-surface)]/72 p-1.5 shadow-[0_20px_44px_-22px_rgba(2,6,23,0.88)] ring-1 ring-white/20 backdrop-blur-2xl"
+          style={{
+            paddingBottom: 'calc(0.375rem + env(safe-area-inset-bottom))',
+          }}
         >
-          <p
-            className={`text-sm font-semibold text-[var(--color-primary)] ${
-              isCollapsed ? 'lg:sr-only' : ''
-            }`}
-          >
-            Core Navigation
-          </p>
-          {isCollapsed ? (
-            <span className="hidden text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-primary)] lg:inline">
-              Nav
-            </span>
-          ) : null}
+          {NAVIGATION_ITEMS.map((item) => (
+            <CommandPillLink
+              key={item.id}
+              href={item.href}
+              label={item.label}
+              id={item.id}
+              isActive={activeHref === item.href}
+              onNavigate={onNavigate}
+              isMobile
+            />
+          ))}
         </div>
-
-        <nav aria-label="Main navigation" className="mt-7 flex-1">
-          <ul className="space-y-2">
-            {NAVIGATION_ITEMS.map((item) => (
-              <li key={item.id}>
-                <a
-                  href={item.href}
-                  className={`group flex items-center rounded-lg px-3.5 py-2.5 text-sm font-medium transition focus-visible:outline-none ${
-                    activeHref === item.href
-                      ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
-                      : 'text-[var(--color-text-muted)] hover:bg-[var(--color-primary-soft)] hover:text-[var(--color-primary)]'
-                  } ${isCollapsed ? 'lg:justify-center lg:px-0' : ''}`}
-                  onClick={() => onNavigate(item.href)}
-                  aria-current={activeHref === item.href ? 'page' : undefined}
-                  aria-label={item.label}
-                  title={isCollapsed ? item.label : undefined}
-                >
-                  <span
-                    className={`mr-3 inline-flex h-2.5 w-2.5 rounded-full transition group-hover:bg-[var(--color-primary)] ${
-                      activeHref === item.href
-                        ? 'bg-[var(--color-primary)]'
-                        : 'bg-[var(--color-border)]'
-                    } ${isCollapsed ? 'lg:mr-0' : ''}`}
-                    aria-hidden="true"
-                  />
-                  <span className={isCollapsed ? 'lg:sr-only' : ''}>
-                    {item.label}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div
-          className={`rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-4 ${
-            isCollapsed ? 'lg:hidden' : ''
-          }`}
-        >
-          <p className="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
-            System
-          </p>
-          <p className="mt-1 text-sm text-[var(--color-text-primary)]">
-            Accessibility and responsive polish enabled
-          </p>
-        </div>
-      </aside>
+      </nav>
     </>
   )
 }

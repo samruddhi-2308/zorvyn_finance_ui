@@ -29,7 +29,7 @@ export function SummaryCardsGrid({
 }: SummaryCardsGridProps): ReactElement {
   if (isLoading) {
     return (
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {Array.from({ length: 4 }, (_, index) => (
           <div
             key={`summary-skeleton-${index}`}
@@ -44,7 +44,7 @@ export function SummaryCardsGrid({
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {cards.map((card, index) => (
         <div
           key={card.title}
@@ -54,6 +54,7 @@ export function SummaryCardsGrid({
           <SummaryCard
             title={card.title}
             value={card.value}
+            valueKind={card.valueKind}
             trendDirection={card.trendDirection}
             trendValue={card.trendValue}
             trendLabel={card.trendLabel}

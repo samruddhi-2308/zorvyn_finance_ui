@@ -1,19 +1,72 @@
-const inrFormatter = new Intl.NumberFormat('en-IN', {
-  style: 'currency',
-  currency: 'INR',
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})
+import type { CurrencyMode } from '@/types'
 
-/**
- * Formats a numeric amount into Indian Rupee currency notation.
- * @param amount - Monetary value to format.
- * @returns Currency string, for example `Rs 1,42,650.00`.
- */
-export function formatINR(amount: number): string {
-  if (!Number.isFinite(amount)) {
-    return inrFormatter.format(0)
+const currencyLocaleMap: Record<CurrencyMode, string> = {
+  INR: 'en-IN',
+  USD: 'en-US',
+  EUR: 'de-DE',
+  GBP: 'en-GB',
+}
+
+const formatterCache = new Map<string, Intl.NumberFormat>()
+
+function getFormatter(
+  currency: CurrencyMode,
+  mode: 'standard' | 'compact',
+): Intl.NumberFormat {
+  const cacheKey = `${currency}-${mode}`
+  const cachedFormatter = formatterCache.get(cacheKey)
+
+  if (cachedFormatter) {
+    return cachedFormatter
   }
 
-  return inrFormatter.format(amount)
+  const formatter = new Intl.NumberFormat(currencyLocaleMap[currency], {
+    style: 'currency',
+    currency,
+    notation: mode === 'compact' ? 'compact' : 'standard',
+    minimumFractionDigits: mode === 'compact' ? 0 : 2,
+    maximumFractionDigits: mode === 'compact' ? 1 : 2,
+  })
+
+  formatterCache.set(cacheKey, formatter)
+  return formatter
+}
+
+/**
+ * Formats a numeric amount in the active currency mode.
+ */
+export function formatCurrency(
+  amount: number,
+  currency: CurrencyMode = 'INR',
+): string {
+  const formatter = getFormatter(currency, 'standard')
+
+  if (!Number.isFinite(amount)) {
+    return formatter.format(0)
+  }
+
+  return formatter.format(amount)
+}
+
+/**
+ * Formats a numeric amount in compact currency notation.
+ */
+export function formatCompactCurrency(
+  amount: number,
+  currency: CurrencyMode = 'INR',
+): string {
+  const formatter = getFormatter(currency, 'compact')
+
+  if (!Number.isFinite(amount)) {
+    return formatter.format(0)
+  }
+
+  return formatter.format(amount)
+}
+
+/**
+ * Backward-compatible alias for INR formatting.
+ */
+export function formatINR(amount: number): string {
+  return formatCurrency(amount, 'INR')
 }

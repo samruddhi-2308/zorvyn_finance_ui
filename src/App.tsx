@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react'
-import { AppShell } from '@/components/layout/AppShell'
+import { LandingToDashboardExperience } from '@/components/landing/LandingToDashboardExperience'
 
 function App(): ReactElement {
-  return <AppShell />
+  return <LandingToDashboardExperience />
 }
 
 export default App

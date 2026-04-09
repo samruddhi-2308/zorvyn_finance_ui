@@ -73,6 +73,8 @@ These enhancements were added intentionally beyond the mandatory assignment brie
 - Local storage persistence for key state slices (transactions, filters, role, and UI preferences)
 - Admin-only report export actions in transactions toolbar (CSV and PDF)
 - Animated interactions (count-up metrics, hover transitions, section reveal-on-scroll)
+- Cinematic landing flow with starfield canvas, SVG intro choreography, and parallax scroll reveal
+- In-app transition from landing narrative directly into the original dashboard workspace (no hard reload)
 - Floating help panel and keyboard shortcuts
 - Quick actions strip for jump navigation and search focus
 - Dense daily balance runway model with detailed custom tooltips and brush-driven exploration
@@ -96,6 +98,7 @@ src/
     cards/
     charts/
     insights/
+    landing/
     layout/
       workspace/
     transactions/
@@ -110,6 +113,7 @@ src/
 Architecture intent:
 
 - components: presentation and interaction surfaces
+- components/landing: animated entry journey and dashboard transition views
 - components/layout/workspace: shell-level view primitives (quick actions, greeting, loading, reveal wrappers)
 - hooks: orchestration and derived-view logic
 - store: global state slices + persistence
@@ -188,6 +192,8 @@ npm run dev
 - App shell card reveal now uses a capped, one-pass observer strategy to avoid heavy continuous DOM observation
 - Section wrappers use viewport-aware rendering hints (`content-visibility`) to reduce off-screen paint cost
 - Card reveal transitions were simplified to transform/opacity-only paths for smoother scroll on lower-power devices
+- Landing starfield is rendered through a single canvas animation loop with capped DPR and no React frame rerenders
+- Hero and reveal animations are transform/opacity-driven with reduced-motion fallbacks to preserve smooth interaction
 
 ## 14. Known Limitations
 

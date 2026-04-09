@@ -97,6 +97,7 @@ src/
     charts/
     insights/
     layout/
+      workspace/
     transactions/
   constants/
   data/
@@ -109,6 +110,7 @@ src/
 Architecture intent:
 
 - components: presentation and interaction surfaces
+- components/layout/workspace: shell-level view primitives (quick actions, greeting, loading, reveal wrappers)
 - hooks: orchestration and derived-view logic
 - store: global state slices + persistence
 - utils: deterministic data transforms and formatting helpers
@@ -183,6 +185,9 @@ npm run dev
 - Lazy loading for heavier sections/charts
 - Memoized derived state in hooks
 - Skeleton loading patterns to improve perceived responsiveness
+- App shell card reveal now uses a capped, one-pass observer strategy to avoid heavy continuous DOM observation
+- Section wrappers use viewport-aware rendering hints (`content-visibility`) to reduce off-screen paint cost
+- Card reveal transitions were simplified to transform/opacity-only paths for smoother scroll on lower-power devices
 
 ## 14. Known Limitations
 

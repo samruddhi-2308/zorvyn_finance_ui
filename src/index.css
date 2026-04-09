@@ -55,6 +55,7 @@
 
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -69,6 +70,7 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-overflow-scrolling: touch;
   }
 
   [data-theme='dark'] body {
@@ -103,7 +105,7 @@
 
 @layer components {
   .surface-card {
-    @apply rounded-card border border-[var(--color-border)] bg-[var(--glass-surface)] shadow-card backdrop-blur-xl transition duration-300;
+    @apply rounded-card border border-[var(--color-border)] bg-[var(--glass-surface)] shadow-card transition duration-300;
     background-image: linear-gradient(
       160deg,
       rgb(255 255 255 / 0.34),
@@ -196,18 +198,25 @@
       inset 0 -1px 0 rgb(56 189 248 / 0.2);
   }
 
+  .app-main-scroll {
+    transform: translateZ(0);
+  }
+
+  .section-viewport {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 680px;
+  }
+
   .scroll-swipe-card {
     opacity: 0;
-    transform: translate3d(var(--scroll-swipe-x, 0), 22px, 0) scale(0.985);
-    filter: saturate(0.88) blur(0.4px);
+    transform: translate3d(var(--scroll-swipe-x, 0), 16px, 0);
     transition:
-      opacity 560ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 620ms cubic-bezier(0.16, 1, 0.3, 1),
-      filter 620ms cubic-bezier(0.16, 1, 0.3, 1),
-      border-color 260ms ease,
-      box-shadow 260ms ease;
+      opacity 300ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 220ms ease,
+      box-shadow 220ms ease;
     transition-delay: var(--scroll-swipe-delay, 0ms);
-    will-change: opacity, transform, filter;
+    will-change: opacity, transform;
   }
 
   .scroll-swipe-card[data-swipe-from='left'] {
@@ -220,8 +229,7 @@
 
   .scroll-swipe-card.is-visible {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-    filter: none;
+    transform: translate3d(0, 0, 0);
   }
 
   .section-reveal {
@@ -496,7 +504,6 @@
   .scroll-swipe-card {
     opacity: 1;
     transform: none;
-    filter: none;
     transition: none;
   }
 }

@@ -23,7 +23,7 @@ export const useRoleStore = create<RoleStoreState>()(
       },
     }),
     {
-      name: 'zorvyn-role',
+      name: 'findash-role',
       version: 2,
       storage: createJSONStorage(() => localStorage),
       migrate: () => ({

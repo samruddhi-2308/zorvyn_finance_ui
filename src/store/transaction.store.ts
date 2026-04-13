@@ -167,7 +167,7 @@ export const useTransactionStore = create<TransactionStoreState>()(
       },
     }),
     {
-      name: 'zorvyn-transactions',
+      name: 'findash-transactions',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         transactions: state.transactions,

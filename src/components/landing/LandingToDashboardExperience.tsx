@@ -318,7 +318,7 @@ function LandingHero({
               }}
               className="mt-4 max-w-2xl text-balance text-sm font-medium tracking-[0.06em] text-slate-300 md:text-base"
             >
-              Zorvyn-grade finance intelligence for founders, operators, and teams
+              Portfolio-grade finance intelligence for founders, operators, and teams
               that move with precision.
             </motion.p>
           </div>

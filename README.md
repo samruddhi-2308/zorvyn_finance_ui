@@ -1,4 +1,4 @@
-# Zorvyn Finance Dashboard UI
+# FinDash Finance Dashboard UI
 
 Frontend Developer Internship Assignment Submission
 
@@ -16,7 +16,7 @@ This project was built for the Finance Dashboard UI assignment brief. The app is
 
 ## 2. Live Demo
 
-- Live URL: https://zorvynfinanceui.netlify.app/ 
+- Live URL: https://your-live-demo-url.example 
 - Local URL: http://localhost:5173/
 
 
@@ -124,10 +124,12 @@ Architecture intent:
 
 ```bash
 git clone <your-repo-url>
-cd Zorvyn_Finance_UI
+cd findash-finance-ui
 npm install
 npm run dev
 ```
+
+Use your local folder name if it differs.
 
 ## 8. Scripts
 
@@ -209,5 +211,5 @@ The core assignment requirements are met.
 ## 16. Handoff Checklist
 
 - Update live demo link after Netlify deploy
-- Add final company logo at public branding path
+- Finalize portfolio favicon/brand mark if needed
 - Perform final UI pass on target stakeholder screen resolutions

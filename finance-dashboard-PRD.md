@@ -1,6 +1,6 @@
 # 📋 Product Requirements Document
 
-## Zorvyn -Finance Dashboard UI
+## FinDash -Finance Dashboard UI
 
 **For:** GitHub Copilot / AI-assisted development  
 **Author:** Principal Frontend Engineer  
@@ -11,7 +11,7 @@
 
 ## 1. Project Overview
 
-Build a **Finance Dashboard UI** as a frontend-only, single-page application. The product simulates a personal finance tracker for a fintech company (Zorvyn). It must be evaluated as enterprise-grade code -not a toy prototype.
+Build a **Finance Dashboard UI** as a frontend-only, single-page application. The product simulates a personal finance tracker for a fintech portfolio project. It must be evaluated as enterprise-grade code -not a toy prototype.
 
 **This is not a design exercise. It is an engineering exercise that also looks good.**
 
@@ -35,7 +35,7 @@ Build a **Finance Dashboard UI** as a frontend-only, single-page application. Th
 
 ## 3. Architecture Constraints (Non-Negotiable)
 
-These mirror Zorvyn's enterprise engineering standards:
+These mirror enterprise engineering standards:
 
 ### 3.1 Component Modularity
 
@@ -374,7 +374,7 @@ Toggle in header. Switches between light/dark via CSS custom property overrides:
 }
 ```
 
-Persists to `localStorage` key `zorvyn_theme`.
+Persists to `localStorage` key `findash_theme`.
 
 ---
 
@@ -391,7 +391,7 @@ Use Zustand's `persist` middleware:
 
 ```js
 import { persist } from 'zustand/middleware';
-const useTransactionStore = create(persist((set) => ({ ... }), { name: 'zorvyn-transactions' }));
+const useTransactionStore = create(persist((set) => ({ ... }), { name: 'findash-transactions' }));
 ```
 
 ---
@@ -459,7 +459,7 @@ The README.md must include:
 4. **Setup instructions:**
    ```bash
    git clone <repo>
-   cd zorvyn-dashboard
+  cd findash-dashboard
    npm install
    npm run dev
    ```
@@ -532,4 +532,4 @@ Follow this order to avoid dependency issues:
 
 ---
 
-_End of PRD -This document is the single source of truth for the Zorvyn Finance Dashboard UI assignment._
+_End of PRD -This document is the single source of truth for the FinDash Finance Dashboard UI assignment._

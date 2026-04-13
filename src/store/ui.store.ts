@@ -71,7 +71,7 @@ export const useUIStore = create<UIStoreState>()(
       },
     }),
     {
-      name: 'zorvyn-ui',
+      name: 'findash-ui',
       version: 2,
       storage: createJSONStorage(() => localStorage),
       migrate: (persistedState) => {

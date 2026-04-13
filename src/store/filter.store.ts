@@ -103,7 +103,7 @@ export const useFilterStore = create<FilterStoreState>()(
       },
     }),
     {
-      name: 'zorvyn-filters',
+      name: 'findash-filters',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         searchQuery: state.searchQuery,

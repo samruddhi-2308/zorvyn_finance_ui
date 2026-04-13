@@ -174,7 +174,7 @@ async function exportCsvReport(
   ]
 
   const rows: string[] = [
-    ['Report Name', 'Zorvyn Dashboard Report']
+    ['Report Name', 'FinDash Dashboard Report']
       .map((value) => escapeCsvValue(value))
       .join(','),
     ['Generated At', toFriendlyDateTime(generatedAt)]
@@ -235,7 +235,7 @@ async function exportPdfReport(
 
   pdf.setFont('helvetica', 'bold')
   pdf.setFontSize(13)
-  pdf.text('Zorvyn Dashboard Snapshot', marginX, headerY)
+  pdf.text('FinDash Dashboard Snapshot', marginX, headerY)
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(10)
   pdf.text(`Generated At: ${toFriendlyDateTime(generatedAt)}`, marginX, headerY + 16)
@@ -293,7 +293,7 @@ async function exportPdfReport(
 export async function exportDashboardReport(
   payload: DashboardReportPayload,
   format: ReportFormat,
-  filenamePrefix = 'zorvyn-dashboard-report',
+  filenamePrefix = 'findash-dashboard-report',
 ): Promise<void> {
   const generatedAt = payload.generatedAt ?? new Date()
 

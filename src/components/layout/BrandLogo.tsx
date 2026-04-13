@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
 interface BrandLogoProps {
   readonly className?: string
@@ -6,33 +6,23 @@ interface BrandLogoProps {
 }
 
 /**
- * Renders the brand logo from a public asset with a graceful text fallback.
+ * Renders a lightweight portfolio brand lockup.
  */
 export function BrandLogo({
   className = '',
   compact = false,
 }: BrandLogoProps): ReactElement {
-  const [hasLoadError, setHasLoadError] = useState(false)
-
   return (
     <div className={`inline-flex items-center gap-3 ${className}`.trim()}>
-      {!hasLoadError ? (
-        <img
-          src="/branding/zorvyn-logo.png"
-          alt="Zorvyn Fintech"
-          className={`${compact ? 'h-8 w-auto' : 'h-10 w-auto'} object-contain`}
-          loading="eager"
-          onError={() => setHasLoadError(true)}
-        />
-      ) : (
-        <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-primary-soft)] text-sm font-bold text-[var(--color-primary)]">
-          Z
-        </div>
-      )}
+      <div
+        className={`${compact ? 'h-8 w-8 text-[0.62rem]' : 'h-10 w-10 text-xs'} inline-flex items-center justify-center rounded-lg bg-gradient-to-br from-cyan-300 via-sky-300 to-indigo-300 font-bold uppercase tracking-[0.14em] text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)]`}
+      >
+        FD
+      </div>
 
       <div className="leading-tight">
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-text-muted)]">
-          Zorvyn Fintech
+          FinDash
         </p>
         {!compact ? (
           <p className="text-sm font-semibold text-[var(--color-text-primary)]">

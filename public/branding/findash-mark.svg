@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="FinDash mark">
+  <defs>
+    <linearGradient id="mark-gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#67e8f9" />
+      <stop offset="50%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="14" fill="#050f25" />
+  <path d="M16 43V20H42V26H23V30H39V36H23V43H16Z" fill="url(#mark-gradient)" />
+  <path d="M47 43L39 27H46L51 37L55 27H60L52 43H47Z" fill="url(#mark-gradient)" />
+</svg>
